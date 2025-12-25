@@ -1,0 +1,24 @@
+{
+  "name": "DeerHacks",
+  "short_name": "DeerHacks",
+  "description": "DeerHacks is the largest annual hackathon at University of Toronto Mississauga. Join us on February 16-18, 2024 for a weekend of prizes, development, and innovation!",
+  "icons": [
+    {
+      "src": "/icons/192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#181818",
+  "background_color": "#181818",
+  "start_url": "/dashboard",
+  "display": "fullscreen",
+  "orientation": "portrait"
+}

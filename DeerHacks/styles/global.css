@@ -1,0 +1,7 @@
+#__next {
+  overflow-x: clip;
+}
+
+* {
+  scroll-behavior: smooth;
+}
