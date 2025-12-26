@@ -1,4 +1,4 @@
-# React Mountain 🏔️⚛️
+# 🏔️ Framework Mountain
 
 This repository is a comprehensive collection of **front-end projects** built with **React, Svelte, SvelteKit, and Vue**. Each project explores different concepts, frameworks, UI patterns, and interactive experiences.
 
