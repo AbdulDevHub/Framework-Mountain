@@ -41,22 +41,6 @@ Each project lives in its **own dedicated folder** and focuses on a specific set
 - **Vuetify Calendar** — Interactive calendar component
 - **Vuetify Image Gallery** — Responsive image gallery
 
-### Vanilla JavaScript Projects
-
-*(From Simple Web Projects)*
-
-- **CSS Theme Switcher** — CSS theming demonstration
-- **Diamond Photo Gallery** — Hover-based photo gallery
-- **Drum Kit** — Virtual drum kit
-- **Face Bomp** — Interactive game
-- **Fire Alarm Simulation** — Simulation interface
-- **Product Splash Page** — Landing page design
-- **Shopping Cart Math** — Cart calculation logic
-- **Snap Stash** — Image storage and categorization
-- **Temp Control UI** — Temperature control interface
-- **Twitter Clone** — Social media UI clone
-- **Weekly Tasks Math** — Task management system
-
 ---
 
 ## 🌟 Featured Projects
@@ -177,6 +161,101 @@ A multi-page **van rental platform** with authentication and host features.
 
 ---
 
+### 📅 Vuetify Calendar (Vue + Vuetify)
+
+📁 `Vuetify Calendar/`
+
+An interactive **calendar component** built using Vue and Vuetify, focusing on UI framework integration and state management.
+
+**Key Features:**
+
+- Custom calendar view
+- Vuetify-based styling and layout
+- Centralized state handling
+- Clean component separation
+
+**Technologies:** Vue, Vuetify, Vuex-style store, Material Design components
+
+![Vuetify Calendar](./Vuetify%20Calendar/src/assets/cal-screen.JPG)
+
+---
+
+### 🖼️ Vuetify Image Gallery (Vue + Vuetify)
+
+📁 `Vuetify Image Gallery/`
+
+A responsive **image gallery application** built with Vuetify, featuring sidebar navigation and dynamic layout.
+
+**Key Features:**
+
+- Responsive gallery grid
+- Sidebar navigation component
+- Vuetify theming
+- Component-driven layout
+
+**Technologies:** Vue, Vuetify, Material Design Icons, Web Font Loader
+
+![Vuetify Image Gallery](./Vuetify%20Image%20Gallery/Screenshot.png)
+
+---
+
+### 🎨 Animated CSS Login Form (Svelte)
+
+📁 `Animated CSS Login Form/`
+
+A focused UI experiment featuring an **animated login form** with real-time password validation feedback.
+
+**Key Features:**
+
+- Animated transitions
+- Password strength meter
+- Lightweight Svelte setup
+- CSS-driven effects
+
+**Technologies:** Svelte, CSS animations, Rollup
+
+![Animated Login Form](./Animated%20CSS%20Login%20Form/Screenshot.png)
+
+---
+
+### 🐱 Sky-Diving Parallax Cat (React + Vite)
+
+📁 `Sky-Diving Parallax Cat/`
+
+A fun **parallax scrolling animation** featuring a skydiving cat.
+
+**Key Features:**
+
+- Smooth parallax effects
+- Multiple animation layers
+- Vite-powered build
+- Responsive design
+
+**Technologies:** React, Vite, CSS animations
+
+![Sky-Diving Parallax Cat](./Sky-Diving-Parallax-Cat/Screenshot.png)
+
+---
+
+### 💳 Pay Card Component (React + SCSS)
+
+📁 `Pay Card Component/`
+
+An interactive **credit card form** with real-time validation and card type detection.
+
+**Key Features:**
+
+- Dynamic card type detection
+- Real-time formatting
+- 25 card background themes
+- Flip animation
+
+**Technologies:** React, SCSS
+
+![Pay Card Component](./Pay%20Card%20Component/demo.gif)
+
+---
+
 ## 🛠️ Skills Demonstrated
 
 ### Frameworks & Libraries
@@ -240,31 +319,6 @@ yarn dev
 ```
 
 Refer to individual project READMEs for project-specific setup instructions.
-
----
-
-## 📁 Repository Structure
-
-```
-React-Mountain/
-├── React Projects/
-│   ├── 3D Apple Homepage/
-│   ├── DeerHacks/
-│   ├── Van Store/
-│   └── ...
-├── Svelte Projects/
-│   ├── 3D Svelte Portfolio/
-│   ├── Animated CSS Login Form/
-│   └── Story Path/
-├── Vue Projects/
-│   ├── Job Board/
-│   ├── Vuetify Calendar/
-│   └── Vuetify Image Gallery/
-└── Vanilla JS Projects/
-    ├── CSS Theme Switcher/
-    ├── Drum Kit/
-    └── ...
-```
 
 ---
 
