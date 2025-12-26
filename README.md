@@ -1,6 +1,6 @@
 # React Mountain 🏔️⚛️
 
-This repository is a comprehensive collection of **front-end projects** built with **React, Svelte, SvelteKit, Vue, and vanilla JavaScript**. Each project explores different concepts, frameworks, UI patterns, and interactive experiences.
+This repository is a comprehensive collection of **front-end projects** built with **React, Svelte, SvelteKit, and Vue**. Each project explores different concepts, frameworks, UI patterns, and interactive experiences.
 
 Projects range from **small UI experiments** to **full-stack applications** with 3D visuals, CMS integration, and complex state management.
 
