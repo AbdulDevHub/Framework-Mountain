@@ -148,8 +148,8 @@ A modern **Angular-based e-commerce demo application** built to explore Angular 
 
 **Technologies:** Angular, TypeScript, Tailwind CSS, Angular Router, Node.js, Karma, Jasmine
 
-![Angular WebShop Screenshot 1](./Angular%20WebShop/Screenshot1.png)
-![Angular WebShop Screenshot 2](./Angular%20WebShop/Screenshot2.png)
+![Angular WebShop Screenshot 1](./Angular%20Webshop/Screenshot1.png)
+![Angular WebShop Screenshot 2](./Angular%20Webshop/Screenshot2.png)
 
 ---
 
