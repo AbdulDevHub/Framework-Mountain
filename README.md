@@ -1,6 +1,6 @@
 # 🏔️ Framework Mountain
 
-This repository is a comprehensive collection of **front-end projects** built with **React, Svelte, SvelteKit, and Vue**. Each project explores different concepts, frameworks, UI patterns, and interactive experiences.
+This repository is a comprehensive collection of **front-end projects** built with **React, Svelte, SvelteKit, Vue, and Angular**. Each project explores different concepts, frameworks, UI patterns, and interactive experiences.
 
 Projects range from **small UI experiments** to **full-stack applications** with 3D visuals, CMS integration, and complex state management.
 
@@ -40,6 +40,10 @@ Each project lives in its **own dedicated folder** and focuses on a specific set
 - **Job Board** — Full CRUD job listing application
 - **Vuetify Calendar** — Interactive calendar component
 - **Vuetify Image Gallery** — Responsive image gallery
+
+### Angular Projects
+
+- **Angular WebShop** — E-commerce demo application with cart state, routing, and a Node.js checkout simulation
 
 ---
 
@@ -122,6 +126,27 @@ A complete **job listing application** with client-side routing and CRUD operati
 **Technologies:** Vue 3, Vite, Vue Router, Tailwind CSS
 
 ![Job Board](./Job%20Board/public/screen.png)
+
+---
+
+### 🛒 Angular WebShop (Angular + Tailwind CSS)
+
+📁 `Angular WebShop/`
+
+A modern **Angular-based e-commerce demo application** built to explore Angular fundamentals through a real-world style webshop.
+
+**Key Features:**
+
+- Product listing with reusable components
+- Shopping cart functionality
+- Service-based client-side state management
+- Angular Router for page navigation
+- Tailwind CSS styling
+- Demo Node.js backend for checkout flow
+- Environment-based configuration
+- Clean separation of components, pages, services, and models
+
+**Technologies:** Angular, TypeScript, Tailwind CSS, Angular Router, Node.js, Karma, Jasmine
 
 ---
 
@@ -260,7 +285,7 @@ An interactive **credit card form** with real-time validation and card type dete
 
 ### Frameworks & Libraries
 
-- React, Next.js, Svelte, SvelteKit, Vue
+- React, Next.js, Svelte, SvelteKit, Vue, Angular
 - TypeScript, JavaScript (ES6+)
 - React Router, Vue Router, SvelteKit routing
 
@@ -274,6 +299,7 @@ An interactive **credit card form** with real-time validation and card type dete
 
 - React Hooks, Context API
 - Vue Composition API
+- Angular services & dependency injection
 - Firebase, MirageJS
 - Prismic CMS, Slice Machine
 
@@ -286,6 +312,7 @@ An interactive **credit card form** with real-time validation and card type dete
 ### Tools & Build Systems
 
 - Vite, Webpack, Rollup
+- Angular CLI
 - TypeScript, Babel
 - PostCSS, ESLint, Prettier
 
@@ -339,6 +366,7 @@ Refer to individual project READMEs for project-specific setup instructions.
 - Real-time collaboration features
 - Microservices architecture examples
 - Server-side rendering comparisons
+- Framework comparison projects (React vs Vue vs Svelte vs Angular)
 
 ---
 
