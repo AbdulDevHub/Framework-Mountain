@@ -204,7 +204,7 @@ An interactive **calendar component** built using Vue and Vuetify, focusing on U
 
 **Technologies:** Vue, Vuetify, Vuex-style store, Material Design components
 
-![Vuetify Calendar](./Vuetify%20Calendar/src/assets/cal-screen.JPG)
+![Vuetify Calendar](./Vuetify%20Calendar/Screenshot.JPG)
 
 ---
 
