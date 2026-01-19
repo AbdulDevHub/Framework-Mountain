@@ -1,7 +1,6 @@
 # 🏔️ Framework Mountain
 
-**Framework Mountain** is a curated collection of web development projects organized into themed **Valleys**.  
-Each Valley represents a focused area of exploration such as UI components, creative experiments, full web apps, backend systems, games, portfolios, and data scraping.
+**Framework Mountain** is a curated collection of web development projects organized into themed **Valleys**. Each Valley represents a focused area of exploration such as UI components, creative experiments, full web apps, backend systems, games, portfolios, and data scraping.
 
 All projects are **self-contained**, framework-diverse, and built for hands-on learning.
 
@@ -37,7 +36,7 @@ A modern **Next.js-based project** integrating backend concepts and API configur
 
 <div align="center">
   <img src="./Component%20Valley/Animated%20CSS%20Login%20Form/Screenshot.png" width="220" />
-  <img src="./Component%20Valley/Pay%20Card%20Component/Screenshot.png" width="220" />
+  <img src="./Component%20Valley/Pay%20Card%20Component/demo.gif" width="220" />
   <img src="./Component%20Valley/Vuetify%20Image%20Gallery/Screenshot.png" width="220" />
 </div>
 
@@ -80,7 +79,7 @@ A modern **Next.js-based project** integrating backend concepts and API configur
 <div align="center">
   <img src="./Data%20Scrape%20Valley/Scrapping%20A%20Bookstore%20With%20Puppeteer/Screenshot.png" width="220" />
   <img src="./Data%20Scrape%20Valley/Scrapping%20Blogs%20Wtih%20Puppeteer/Screenshot%201.png" width="220" />
-  <img src="./Data%20Scrape%20Valley/Scrapping%20Dental%20PMS%20Sites%20With%20Puppeteer/Screenshot.png" width="220" />
+  <img src="./Data%20Scrape%20Valley/Scrapping%20Dental%20PMS%20Sites%20With%20Puppeteer/screenshots/dentrix-payer-list.png" width="220" />
 </div>
 
 ### Projects
@@ -177,8 +176,9 @@ Each project is self-contained.
 
 ```bash
 cd Valley/Project-Name
-npm install
-npm run dev
+pnpm import
+pnpm install
+pnpm dev
 ````
 
 Refer to individual project READMEs for project-specific setup.
