@@ -1,21 +1,21 @@
 # 🏔️ Framework Mountain
 
-**Framework Mountain** is a curated collection of front-end, backend, creative, and experimental projects organized into thematic **Valleys**.  
-Each Valley represents a focused area of exploration, ranging from UI components and full web apps to backend APIs, games, and data scraping.
+**Framework Mountain** is a curated collection of web development projects organized into themed **Valleys**.  
+Each Valley represents a focused area of exploration such as UI components, creative experiments, full web apps, backend systems, games, portfolios, and data scraping.
 
-Projects are **self-contained**, framework-diverse, and built for hands-on learning and experimentation.
+All projects are **self-contained**, framework-diverse, and built for hands-on learning.
 
 ---
 
 ## 🗺️ Valley Overview
 
-- 🧠 **Backend Valley** — APIs & server-side development  
-- 🧩 **Component Valley** — Reusable UI components  
-- 🎨 **Creative Valley** — Visual & animation experiments  
-- 🕷️ **Data Scrape Valley** — Web scraping projects  
-- 🎮 **Game Valley** — Browser-based games  
-- 🌌 **Portfolio Valley** — Personal portfolio experiences  
-- 🕸️ **Web App Valley** — Full web applications & clones  
+- 🧠 **Backend Valley** — Backend & full-stack foundations
+- 🧩 **Component Valley** — Reusable UI components
+- 🎨 **Creative Valley** — Visual & animation experiments
+- 🕷️ **Data Scrape Valley** — Web scraping & automation
+- 🎮 **Game Valley** — Browser-based games
+- 🌌 **Portfolio Valley** — Portfolio & personal showcase sites
+- 🕸️ **Web App Valley** — Full web applications & clones
 
 ---
 
@@ -27,9 +27,9 @@ Projects are **self-contained**, framework-diverse, and built for hands-on learn
 
 <img src="./Backend%20Valley/FastAPI/Screenshot.png" width="220" />
 
-A backend API project built with **FastAPI**, focusing on modern Python backend patterns.
+A modern **Next.js-based project** integrating backend concepts and API configuration, structured for scalable full-stack development.
 
-**Tech:** FastAPI, Python
+**Tech:** Next.js, TypeScript, PostCSS, pnpm
 
 ---
 
@@ -43,11 +43,16 @@ A backend API project built with **FastAPI**, focusing on modern Python backend 
 
 ### Projects
 
-- **Animated CSS Login Form** — Animated login UI with validation  
-- **Pay Card Component** — Interactive credit card form  
-- **Vuetify Image Gallery** — Responsive gallery layout  
+- **Animated CSS Login Form**  
+  Animated login form built with Svelte and Rollup.
 
-**Tech:** Svelte, React, Vue, Vuetify, CSS, SCSS
+- **Pay Card Component**  
+  Interactive credit card form with live preview and theming.
+
+- **Vuetify Image Gallery**  
+  Responsive image gallery with sidebar navigation.
+
+**Tech:** Svelte, React, Vue 2, Vuetify, SCSS, Rollup
 
 ---
 
@@ -60,10 +65,13 @@ A backend API project built with **FastAPI**, focusing on modern Python backend 
 
 ### Projects
 
-- **3D Apple Homepage** — Scroll-driven 3D product showcase  
-- **Sky Diving Parallax Cat** — Parallax animation experiment  
+- **3D Apple Homepage**  
+  3D product-style homepage using React and Vite with GLB models.
 
-**Tech:** React, Three.js, GSAP, CSS animations
+- **Sky Diving Parallax Cat**  
+  Fun parallax animation experiment with layered assets.
+
+**Tech:** React, Vite, CSS, JavaScript
 
 ---
 
@@ -71,17 +79,22 @@ A backend API project built with **FastAPI**, focusing on modern Python backend 
 
 <div align="center">
   <img src="./Data%20Scrape%20Valley/Scrapping%20A%20Bookstore%20With%20Puppeteer/Screenshot.png" width="220" />
-  <img src="./Data%20Scrape%20Valley/Scrapping%20Blogs%20Wtih%20Puppeteer/Screenshot.png" width="220" />
+  <img src="./Data%20Scrape%20Valley/Scrapping%20Blogs%20Wtih%20Puppeteer/Screenshot%201.png" width="220" />
   <img src="./Data%20Scrape%20Valley/Scrapping%20Dental%20PMS%20Sites%20With%20Puppeteer/Screenshot.png" width="220" />
 </div>
 
 ### Projects
 
-- **Scrapping A Bookstore With Puppeteer**
-- **Scrapping Blogs With Puppeteer**
-- **Scrapping Dental PMS Sites With Puppeteer**
+- **Scrapping A Bookstore With Puppeteer**  
+  Book data extraction using Puppeteer and TypeScript.
 
-**Tech:** Node.js, Puppeteer
+- **Scrapping Blogs With Puppeteer**  
+  Blog scraping scripts with extracted JSON datasets.
+
+- **Scrapping Dental PMS Sites With Puppeteer**  
+  Advanced scraping and comparison tooling for PMS platforms.
+
+**Tech:** Node.js, Puppeteer, TypeScript, JavaScript
 
 ---
 
@@ -93,9 +106,9 @@ A backend API project built with **FastAPI**, focusing on modern Python backend 
 
 <img src="./Game%20Valley/Flappy%20Bird/Screenshot.png" width="220" />
 
-A browser-based recreation of **Flappy Bird** focusing on game loops and collision detection.
+A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 
-**Tech:** JavaScript, Canvas
+**Tech:** JavaScript, HTML, Canvas
 
 ---
 
@@ -111,20 +124,20 @@ A browser-based recreation of **Flappy Bird** focusing on game loops and collisi
 
 ### Projects
 
-- **3D Solar Portfolio** — Three.js solar-system portfolio  
-- **3D Svelte Portfolio** — CMS-driven 3D portfolio  
-- **Black Hole** — Visual experiment  
-- **Fancy Green** — Stylized portfolio concept  
-- **Techno Explosion** — Motion & effects showcase  
+- **3D Solar Portfolio** — Three.js solar-system themed portfolio  
+- **3D Svelte Portfolio** — CMS-driven SvelteKit portfolio with slices  
+- **Black Hole** — Next.js portfolio with motion & video backgrounds  
+- **Fancy Green** — Clean React + Vite portfolio concept  
+- **Techno Explosion** — High-energy animated Next.js portfolio  
 
-**Tech:** SvelteKit, Three.js, React, CSS animations
+**Tech:** SvelteKit, React, Next.js, Tailwind CSS, Three.js
 
 ---
 
 ## 🕸️ Web App Valley
 
 <div align="center">
-  <img src="./Web%20App%20Valley/Angular%20Webshop/Screenshot.png" width="220" />
+  <img src="./Web%20App%20Valley/Angular%20Webshop/Screenshot1.png" width="220" />
   <img src="./Web%20App%20Valley/Digital%20Hippo/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Job%20Board/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Netflix/Screenshot.png" width="220" />
@@ -132,23 +145,29 @@ A browser-based recreation of **Flappy Bird** focusing on game loops and collisi
 
 ### Projects
 
-- **Angular Webshop** — E-commerce demo with cart & routing  
-- **Digital Hippo** — Full web experience  
-- **Job Board** — CRUD job listing app  
-- **Netflix** — UI clone  
+- **Angular Webshop**  
+  E-commerce demo with cart services and Node.js checkout server.
 
-**Tech:** Angular, Vue, React, Tailwind CSS
+- **Digital Hippo**  
+  Full-featured e-commerce platform with authentication, payments, and CMS.
+
+- **Job Board**  
+  Vue-based CRUD job listing application with routing.
+
+- **Netflix**  
+  Netflix-style UI clone using API-driven rows.
+
+**Tech:** Angular, Vue 3, React, Next.js, Tailwind CSS, Node.js
 
 ---
 
 ## 🛠️ Skills Demonstrated
 
-- **Frameworks:** React, Svelte, SvelteKit, Vue, Angular
-- **Backend:** FastAPI, Node.js
-- **Styling:** Tailwind CSS, SCSS, Vuetify
-- **3D & Motion:** Three.js, GSAP, CSS animations
-- **Data:** Web scraping with Puppeteer
-- **Architecture:** Component-driven design, modular structure
+- **Frameworks:** React, Svelte, SvelteKit, Vue, Angular, Next.js
+- **Styling:** Tailwind CSS, SCSS, Vuetify, CSS animations
+- **Backend & Data:** Node.js, Puppeteer, API integration
+- **3D & Motion:** Three.js, asset-driven animation
+- **Architecture:** Component-based design, modular folders
 
 ---
 
@@ -162,15 +181,15 @@ npm install
 npm run dev
 ````
 
-Refer to individual project folders for details.
+Refer to individual project READMEs for project-specific setup.
 
 ---
 
 ## 📌 Notes
 
-- Focused on **learning, experimentation, and craftsmanship**
-- Valleys group projects by intent, not just technology
-- Complexity ranges from UI experiments to full applications
+- Focused on **learning, experimentation, and real implementations**
+- Valleys group projects by **intent**, not just framework
+- Clean separation between UI, apps, backend, and experiments
 
 ---
 
