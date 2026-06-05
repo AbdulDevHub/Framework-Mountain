@@ -14,6 +14,7 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
 - 🕷️ **Data Scrape Valley** — Web scraping & automation
 - 🎮 **Game Valley** — Browser-based games
 - 🌌 **Portfolio Valley** — Portfolio & personal showcase sites
+- 🔬 **Tech Experiments** — Tooling, CI/CD pipelines, and developer workflow setups
 - 🕸️ **Web App Valley** — Full web applications & clones
 
 ---
@@ -130,6 +131,22 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Techno Explosion** — High-energy animated Next.js portfolio  
 
 **Tech:** SvelteKit, React, Next.js, Tailwind CSS, Three.js
+
+---
+
+## 🔬 Tech Experiments
+
+<div align="center">
+  <img src="./Tech%20Experiments/Github-Actions-Reference/Screenshot.png" width="220" />
+  <img src="./Tech%20Experiments/VitestTesting/Screenshot.png" width="220" />
+</div>
+
+### Projects
+
+- **Github Actions Reference** — CI/CD pipeline with type-checking, testing, linting, and Docker builds wired into GitHub Actions
+- **Vitest Testing** — Unit & integration testing with Vitest
+
+**Tech:** Vitest, JavaScript, TypeScript, GitHub Actions, Docker
 
 ---
 
