@@ -1,0 +1,15 @@
+{
+  // TypeScript compiler configuration.
+  // "noEmit: true" means we use tsc only for type-checking (not to produce .js files).
+  // Actual compilation (if needed) would be handled by a bundler like Vite or esbuild.
+  "compilerOptions": {
+    "target": "ES2022",          // Compile to modern JavaScript
+    "module": "ESNext",          // Use ES module syntax (import/export)
+    "moduleResolution": "bundler", // Resolve modules the way a bundler would
+    "strict": true,              // Enable all strict type checks (recommended)
+    "noEmit": true,              // Don't write .js output files; type-check only
+    "skipLibCheck": true         // Skip type-checking of .d.ts files in node_modules
+  },
+  "include": ["src/**/*.ts"],    // Only check files in the src folder
+  "exclude": ["node_modules"]
+}

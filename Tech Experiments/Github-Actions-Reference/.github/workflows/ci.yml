@@ -1,0 +1,115 @@
+# .github/workflows/ci.yml
+#
+# This is the GitHub Actions workflow file. GitHub reads every .yml file
+# inside .github/workflows/ and registers it as a workflow.
+#
+# KEY CONCEPTS:
+#   Workflow  → this whole file; a named automation
+#   Trigger   → the event(s) that start the workflow (defined under "on:")
+#   Job       → a group of steps that run on the same machine
+#   Step      → a single shell command or reusable Action
+#   Runner    → the virtual machine GitHub spins up to run jobs
+#               (ubuntu-latest = a fresh Ubuntu VM every time)
+
+name: CI  # The display name shown in the GitHub Actions tab
+
+# ── TRIGGERS ─────────────────────────────────────────────────────────────────
+# "on:" defines what events start this workflow.
+on:
+  push:
+    branches: ["**"]   # Run on every push to any branch
+  pull_request:
+    branches: ["main"] # Also run when a PR targets main
+
+# ── JOBS ─────────────────────────────────────────────────────────────────────
+# A workflow can have many jobs. By default they run in parallel.
+# Here we have two jobs: "ci" (lint/typecheck/test) and "docker" (image build).
+jobs:
+
+  # ── JOB 1: ci ──────────────────────────────────────────────────────────────
+  # Runs linting, type-checking, and unit tests.
+  ci:
+    name: Lint, Type-check & Test
+    runs-on: ubuntu-latest  # Use GitHub's hosted Ubuntu runner
+
+    steps:
+      # ── Step 1: Checkout ─────────────────────────────────────────────────
+      # "uses:" runs a pre-built Action from the GitHub Marketplace.
+      # actions/checkout@v4 clones your repo onto the runner so the
+      # following steps can access your files.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Step 2: Set up Node.js ───────────────────────────────────────────
+      # actions/setup-node installs a specific Node version and — crucially —
+      # enables caching of node_modules so installs are faster on repeat runs.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"          # Use Node 20 (LTS)
+          cache: "npm"                # Cache ~/.npm between runs
+
+      # ── Step 3: Install dependencies ─────────────────────────────────────
+      # "run:" executes a shell command directly on the runner.
+      # "npm ci" is like "npm install" but:
+      #   - reads package-lock.json exactly (reproducible installs)
+      #   - fails if lock file is out of sync with package.json
+      #   - faster in CI because it skips some safety checks
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Step 4: Lint (ESLint) ────────────────────────────────────────────
+      # ESLint catches code style issues and potential bugs.
+      # If any rule is violated, ESLint exits with a non-zero code,
+      # which makes the step (and the whole job) fail — CI goes red.
+      - name: Run ESLint
+        run: npm run lint
+
+      # ── Step 5: Type-check (TypeScript) ──────────────────────────────────
+      # "tsc --noEmit" compiles your TypeScript in memory without writing
+      # any .js files. If there are type errors, it exits non-zero → CI fails.
+      - name: Run TypeScript type-check
+        run: npm run typecheck
+
+      # ── Step 6: Unit tests (Vitest) ───────────────────────────────────────
+      # Runs all *.test.ts files. Vitest exits non-zero if any test fails.
+      - name: Run tests (Vitest)
+        run: npm test
+
+  # ── JOB 2: docker ──────────────────────────────────────────────────────────
+  # Builds the Docker image to verify the Dockerfile is valid and the image
+  # can be constructed successfully. We don't push to a registry here —
+  # that would be a separate "deploy" workflow.
+  #
+  # This job only runs after the "ci" job succeeds (needs: ci).
+  # No point building an image if the code doesn't even type-check.
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: ci  # ← Wait for the "ci" job to pass before starting this one
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Step: Build Docker image ─────────────────────────────────────────
+      # docker/build-push-action@v5 is the official Action for building
+      # (and optionally pushing) Docker images.
+      #
+      # "load: true"  → load the built image into the runner's local Docker daemon
+      # "push: false" → do NOT push to a registry (we're just verifying the build)
+      #
+      # The image will be tagged "github-actions-reference:latest" locally.
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        # Buildx is Docker's extended build toolkit. The build-push-action
+        # requires it, and it also enables future features like multi-platform
+        # builds (e.g. building an arm64 image on an x86 runner).
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .          # Build context = repo root (where Dockerfile lives)
+          push: false         # Don't push; just verify the build succeeds
+          load: true          # Load image into local daemon so we could run it
+          tags: github-actions-reference:latest

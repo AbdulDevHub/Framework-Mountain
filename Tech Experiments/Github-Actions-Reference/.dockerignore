@@ -1,0 +1,10 @@
+# .dockerignore
+#
+# Works like .gitignore but for Docker. Files listed here are excluded from
+# the build context sent to the Docker daemon, keeping builds fast and lean.
+
+node_modules     # Never copy local node_modules; the Dockerfile runs npm ci
+.git             # Git history isn't needed in the image
+*.md             # Documentation
+.eslintrc.cjs    # Dev tooling config not needed at runtime
+dist             # Any local build output (we build fresh inside Docker)
