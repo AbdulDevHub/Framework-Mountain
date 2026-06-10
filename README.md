@@ -21,15 +21,20 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
 
 ## 🧠 Backend Valley
 
-### FastAPI
+<div align="center">
+  <img src="./Backend%20Valley/FastAPI/Screenshot.png" width="220" />
+  <img src="./Backend%20Valley/Hono-Practice/Screenshot.png" width="220" />
+</div>
 
-📁 `Backend Valley/FastAPI`
+### Projects
 
-<img src="./Backend%20Valley/FastAPI/Screenshot.png" width="220" />
+- **FastAPI**  
+  A modern Next.js-based project integrating backend concepts and API configuration, structured for scalable full-stack development.
 
-A modern **Next.js-based project** integrating backend concepts and API configuration, structured for scalable full-stack development.
+- **Hono Practice**
+  REST API covering routing, validation, auth middleware, Prisma + Supabase database integration, and Vitest testing.
 
-**Tech:** Next.js, TypeScript, PostCSS, pnpm
+**Tech:** Next.js, TypeScript, PostCSS, pnpm, Hono, Prisma, Supabase, Zod, Vitest
 
 ---
 
