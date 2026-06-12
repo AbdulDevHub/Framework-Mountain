@@ -1,14 +1,18 @@
 import { Hono } from 'hono'
 import { tasksRouter } from './routes/tasks'
+import { authRouter } from './routes/auth'
 import { authMiddleware } from './middleware/auth'
 
 const app = new Hono()
 
-// Routes first
+// Public routes — no auth needed
 app.get('/', (c) => {
   return c.json({ message: 'Hello from Hono!' })
 })
-
+ 
+app.route('/auth', authRouter)    // POST /auth/register, POST /auth/login
+ 
+// Protected routes — JWT required
 app.use('/tasks/*', authMiddleware)
 app.route('/tasks', tasksRouter)
 

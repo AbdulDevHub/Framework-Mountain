@@ -7,6 +7,11 @@ const prisma = {
     update: vi.fn(),
     delete: vi.fn(),
   },
+  // Added for auth routes
+  user: {
+    findUnique: vi.fn(),
+    create: vi.fn(),
+  },
 }
 
 export default prisma
