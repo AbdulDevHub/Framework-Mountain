@@ -144,14 +144,16 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 <div align="center">
   <img src="./Tech%20Experiments/Github-Actions-Reference/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/VitestTesting/Screenshot.png" width="220" />
+  <img src="./Tech%20Experiments/Nextjs-OAuth/Screenshot.png" width="220" />
 </div>
 
 ### Projects
 
 - **Github Actions Reference** — CI/CD pipeline with type-checking, testing, linting, and Docker builds wired into GitHub Actions
 - **Vitest Testing** — Unit & integration testing with Vitest
+- **Nextjs OAuth** — GitHub OAuth login with Auth.js (NextAuth v5)
 
-**Tech:** Vitest, JavaScript, TypeScript, GitHub Actions, Docker
+**Tech:** Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth
 
 ---
 
