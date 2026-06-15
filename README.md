@@ -24,6 +24,7 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
 <div align="center">
   <img src="./Backend%20Valley/FastAPI/Screenshot.png" width="220" />
   <img src="./Backend%20Valley/Hono-Practice/Screenshot.png" width="220" />
+  <img src="./Backend%20Valley/Redis-Learning/Screenshot.png" width="220" />
 </div>
 
 ### Projects
@@ -34,7 +35,10 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
 - **Hono Practice**  
   REST API covering routing, validation, auth middleware, Prisma + Supabase database integration, and Vitest testing.
 
-**Tech:** Next.js, TypeScript, PostCSS, pnpm, Hono, Prisma, Supabase, Zod, Vitest
+- **Redis Learning**  
+  Learning and experimentation with Redis, a distributed in-memory key-value store.
+
+**Tech:** Next.js, TypeScript, PostCSS, pnpm, Hono, Prisma, Supabase, Zod, Vitest, Redis, IoRedis, Docker
 
 ---
 
