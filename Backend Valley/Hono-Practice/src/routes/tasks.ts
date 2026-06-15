@@ -13,12 +13,49 @@ const UpdateTaskSchema = z.object({
   done: z.boolean().optional(),
 })
 
-// GET /tasks - return all tasks
+// GET /tasks - return paginated tasks
+// Usage: GET /tasks?limit=10&cursor=abc  (cursor mode — preferred)
+//        GET /tasks?limit=10&page=2      (offset mode — fallback)
 tasksRouter.get("/", async (c) => {
-  const tasks = await prisma.task.findMany({
-    orderBy: { createdAt: "asc" },
+  const limit = Math.min(Number(c.req.query('limit') ?? '10'), 100)
+  const cursor = c.req.query('cursor')
+  const page = Number(c.req.query('page') ?? '1')
+
+  // --- Cursor pagination ---
+  if (cursor) {
+    const items = await prisma.task.findMany({
+      take: limit + 1,       // fetch one extra to detect if a next page exists
+      skip: 1,               // skip the cursor row itself
+      cursor: { id: cursor },
+      orderBy: { createdAt: 'asc' },
+    })
+
+    const hasNextPage = items.length > limit
+    const data = hasNextPage ? items.slice(0, -1) : items
+
+    return c.json({
+      data,
+      nextCursor: hasNextPage ? data[data.length - 1].id : null,
+    })
+  }
+
+  // --- Offset pagination ---
+  const [items, total] = await Promise.all([
+    prisma.task.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: 'asc' },
+    }),
+    prisma.task.count(),
+  ])
+
+  return c.json({
+    data: items,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+    nextCursor: null,
   })
-  return c.json(tasks)
 })
 
 // POST /tasks - create a new task from request body

@@ -2,7 +2,7 @@
 
 ![My Screenshot](./Screenshot.png)
 
-A REST API built with [Hono](https://hono.dev/), [Prisma](https://www.prisma.io/), and [Supabase](https://supabase.com/) (PostgreSQL). Built as a learning project covering HTTP fundamentals, input validation, JWT authentication, password hashing, database integration, and testing.
+A REST API built with [Hono](https://hono.dev/), [Prisma](https://www.prisma.io/), and [Supabase](https://supabase.com/) (PostgreSQL). Built as a learning project covering HTTP fundamentals, input validation, JWT authentication, password hashing, database integration, security hardening, and testing.
 
 ---
 
@@ -11,9 +11,10 @@ A REST API built with [Hono](https://hono.dev/), [Prisma](https://www.prisma.io/
 - **[Hono](https://hono.dev/)** — lightweight TypeScript web framework
 - **[Prisma](https://www.prisma.io/)** — ORM for database access
 - **[Supabase](https://supabase.com/)** — hosted PostgreSQL database
-- **[Zod](https://zod.dev/)** — schema validation
+- **[Zod](https://zod.dev/)** — schema validation (including environment variable validation at startup)
 - **[jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)** — JWT signing and verification
 - **[bcrypt](https://github.com/kelektiv/node.bcrypt.js)** — password hashing
+- **[hono/secure-headers](https://hono.dev/docs/middleware/builtin/secure-headers)** — HTTP security headers
 - **[Vitest](https://vitest.dev/)** — unit testing
 
 ---
@@ -31,13 +32,14 @@ hono-practice/
 │   │   │   └── prisma.ts    # Shared Prisma mock
 │   │   └── tasks.test.ts    # Route tests (auth + tasks)
 │   ├── lib/
-│   │   └── prisma.ts        # Shared Prisma client
+│   │   ├── prisma.ts        # Shared Prisma client
+│   │   └── env.ts           # Zod-validated environment config (fails fast at startup)
 │   ├── middleware/
 │   │   └── auth.ts          # JWT auth middleware
 │   ├── routes/
 │   │   ├── auth.ts          # /register and /login routes
-│   │   └── tasks.ts         # Tasks CRUD routes
-│   ├── index.ts             # App setup and route mounting
+│   │   └── tasks.ts         # Tasks CRUD routes (with pagination)
+│   ├── index.ts             # App setup, middleware, and route mounting
 │   └── server.ts            # Server entrypoint
 ├── prisma.config.ts         # Prisma configuration
 ├── vitest.config.ts         # Vitest configuration
@@ -67,11 +69,16 @@ DATABASE_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pool
 # Used strictly by Prisma migrations (direct connection, no pooler)
 DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres"
 
-# Secret key used to sign and verify JWTs — keep this private
+# Secret key used to sign and verify JWTs — keep this private, minimum 32 characters
 JWT_SECRET="your-long-random-secret-here"
+
+# Comma-separated list of allowed frontend origins for CORS
+ALLOWED_ORIGINS=http://localhost:5173,https://yourfrontend.com
 ```
 
 Get your connection strings from your Supabase project under **Settings → Database → Connection string**.
+
+> **Note:** All environment variables are validated at startup using Zod (`src/lib/env.ts`). If a required variable is missing or malformed, the app exits immediately with a clear error message rather than failing silently at runtime.
 
 ### 3. Run migrations
 
@@ -135,11 +142,45 @@ npx prisma migrate dev
 
 ---
 
-## Authentication
+## Security
+
+### CORS
+
+This API uses Hono's built-in CORS middleware configured with an explicit origin allowlist. The `ALLOWED_ORIGINS` environment variable controls which frontend URLs are permitted to make cross-origin requests.
+
+```
+ALLOWED_ORIGINS=http://localhost:5173,https://yourfrontend.com
+```
+
+`credentials: true` is set so the browser can send `Authorization` headers cross-origin. This requires a specific origin to be echoed back — `*` is intentionally not used, as browsers reject credentialed requests to wildcard origins.
+
+CORS is a browser-enforced mechanism. Tools like `curl` and Postman bypass it entirely — it protects users in browsers, not the API itself.
+
+### HTTP Security Headers
+
+Security headers are set via `hono/secure-headers`. You can inspect them by running:
+
+```bash
+curl -I http://localhost:3000/
+```
+
+Key headers and what they do:
+
+| Header | Value | Purpose |
+|--------|-------|---------|
+| `X-Frame-Options` | `SAMEORIGIN` | Prevents clickjacking via iframes |
+| `X-Content-Type-Options` | `nosniff` | Stops browsers from guessing content types |
+| `Strict-Transport-Security` | `max-age=15552000` | Forces HTTPS (production only) |
+| `Referrer-Policy` | `no-referrer` | Prevents leaking internal URLs to external sites |
+| `Content-Security-Policy` | `default-src 'self'` | Restricts which resources the browser can load |
+| `X-XSS-Protection` | `0` | Disables a broken legacy browser feature |
+| `Cross-Origin-Opener-Policy` | `same-origin` | Isolates browsing context from other tabs |
+
+`Strict-Transport-Security` is only applied in production (`NODE_ENV=production`) to avoid forcing HTTPS in local development.
+
+### Authentication
 
 This API uses **JWT (JSON Web Token)** authentication.
-
-### How it works
 
 1. Register or log in via `/auth/register` or `/auth/login` — both return a token
 2. Include that token as a `Bearer` header on all `/tasks` requests
@@ -208,24 +249,43 @@ Content-Type: application/json
 
 ### GET /tasks
 
-Returns all tasks ordered by creation date.
+Returns tasks with pagination. Supports two modes:
 
-**Request**
+**Cursor pagination** (preferred — pass a cursor from a previous response):
 ```
-GET /tasks
+GET /tasks?limit=10&cursor=<id>
 Authorization: Bearer <token>
 ```
 
-**Response `200`**
+**Offset pagination** (fallback — pass a page number):
+```
+GET /tasks?limit=10&page=2
+Authorization: Bearer <token>
+```
+
+`limit` defaults to `10` and is capped at `100`.
+
+**Cursor response `200`**
 ```json
-[
-  {
-    "id": "uuid",
-    "title": "Buy groceries",
-    "done": false,
-    "createdAt": "2024-01-01T00:00:00.000Z"
-  }
-]
+{
+  "data": [
+    { "id": "uuid", "title": "Buy groceries", "done": false, "createdAt": "..." }
+  ],
+  "nextCursor": "uuid-of-last-item"
+}
+```
+
+`nextCursor` is `null` when you've reached the last page. Pass it as `?cursor=` on the next request to fetch the next page.
+
+**Offset response `200`**
+```json
+{
+  "data": [...],
+  "total": 83,
+  "page": 2,
+  "totalPages": 9,
+  "nextCursor": null
+}
 ```
 
 ---
@@ -311,6 +371,18 @@ Authorization: Bearer <token>
 
 ---
 
+## Pagination
+
+`GET /tasks` supports two pagination strategies.
+
+**Cursor-based** is what production APIs use. Instead of skipping N rows, the client passes the `id` of the last item it received. The database finds that row by index and returns everything after it — unaffected by new inserts and fast at any depth.
+
+**Offset-based** is simpler but has two problems: new inserts during pagination cause rows to shift (duplicates or skipped items), and `OFFSET 10000` forces the database to scan and discard 10,000 rows before returning your results.
+
+Use cursor pagination for feeds and infinite scroll. Use offset when you need numbered pages (admin tables, search results).
+
+---
+
 ## Running Tests
 
 Tests use Vitest with mocked Prisma, `jsonwebtoken`, and `bcrypt` — no database connection or real cryptography required.
@@ -319,7 +391,7 @@ Tests use Vitest with mocked Prisma, `jsonwebtoken`, and `bcrypt` — no databas
 npm test
 ```
 
-Covers all auth routes (register, login, duplicate email, wrong password) and all task routes including validation errors and token rejection cases.
+Covers all auth routes (register, login, duplicate email, wrong password) and all task routes including pagination behaviour, limit capping, validation errors, and token rejection cases.
 
 ---
 
@@ -338,9 +410,11 @@ Go to [vercel.com](https://vercel.com), click **Add New Project**, and import yo
 In your Vercel project under **Settings → Environment Variables**, add:
 
 ```
-DATABASE_URL  → your Supabase pooler connection string
-DIRECT_URL    → your Supabase direct connection string
-JWT_SECRET    → your secret key for signing JWTs
+DATABASE_URL      → your Supabase pooler connection string
+DIRECT_URL        → your Supabase direct connection string
+JWT_SECRET        → your secret key for signing JWTs (min 32 characters)
+ALLOWED_ORIGINS   → comma-separated list of your frontend URLs
+NODE_ENV          → production
 ```
 
 ### 4. Configure Vercel for Hono
@@ -385,9 +459,13 @@ Or push to your main branch if you have auto-deploy enabled.
 - REST API design with correct HTTP methods and status codes
 - Sub-router pattern with Hono (`app.route()`)
 - Request body validation with Zod (`safeParse`)
+- Environment variable validation with Zod at startup — fails fast with a clear error if config is missing
+- CORS configuration with an explicit origin allowlist — understands why `*` breaks credentialed requests
+- HTTP security headers via `hono/secure-headers` — CSP, HSTS, clickjacking protection, and more
 - JWT authentication — signing, verifying, and embedding user identity
 - Password hashing with bcrypt — salt rounds, one-way hashing, secure comparison
 - Auth middleware that decodes JWTs and passes user identity to route handlers
+- Cursor-based and offset-based pagination — knows the tradeoffs of each
 - Global error handling and `notFound` fallback
 - Prisma schema, migrations, and CRUD operations
 - Supabase hosted PostgreSQL with connection pooling

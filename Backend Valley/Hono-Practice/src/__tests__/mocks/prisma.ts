@@ -6,6 +6,7 @@ const prisma = {
     create: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
+    count: vi.fn(), // needed for offset pagination
   },
   // Added for auth routes
   user: {

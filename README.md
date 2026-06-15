@@ -33,7 +33,7 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
   A modern Next.js-based project integrating backend concepts and API configuration, structured for scalable full-stack development.
 
 - **Hono Practice**  
-  REST API covering routing, validation, auth middleware, Prisma + Supabase database integration, and Vitest testing.
+  REST API covering routing, validation, HTTPS security, auth middleware, Prisma + Supabase database integration, and Vitest testing.
 
 - **Redis Learning**  
   Learning and experimentation with Redis, a distributed in-memory key-value store.

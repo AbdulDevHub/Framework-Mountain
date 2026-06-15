@@ -1,5 +1,6 @@
 import { MiddlewareHandler } from "hono"
 import jwt from "jsonwebtoken"
+import { env } from '../lib/env'
 
 // We extend Hono's context "Variables" type so TypeScript knows that
 // c.get("userId") and c.get("email") are valid and what type they return.
@@ -23,7 +24,7 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
 
   const token = authHeader.split(" ")[1] // grab the token after "Bearer "
 
-  const secret = process.env.JWT_SECRET
+  const secret = env.JWT_SECRET
   if (!secret) throw new Error("JWT_SECRET is not set")
 
   try {

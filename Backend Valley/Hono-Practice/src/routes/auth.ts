@@ -3,6 +3,7 @@ import { z } from "zod"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import prisma from "../lib/prisma"
+import { env } from '../lib/env'
 
 export const authRouter = new Hono()
 
@@ -64,7 +65,7 @@ authRouter.post("/register", async (c) => {
   // - payload: the data baked into the token (readable by anyone, not secret)
   // - secret: only the server knows this; used to sign + later verify
   // - expiresIn: after this time the token is invalid (forces re-login)
-  const secret = process.env.JWT_SECRET
+  const secret = env.JWT_SECRET
   if (!secret) throw new Error("JWT_SECRET is not set")
 
   const token = jwt.sign(
@@ -116,7 +117,7 @@ authRouter.post("/login", async (c) => {
   }
 
   // Step 4: Sign a fresh JWT and return it
-  const secret = process.env.JWT_SECRET
+  const secret = env.JWT_SECRET
   if (!secret) throw new Error("JWT_SECRET is not set")
 
   const token = jwt.sign(
