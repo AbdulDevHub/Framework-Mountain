@@ -157,8 +157,9 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Vitest Testing** — Unit & integration testing with Vitest
 - **Nextjs OAuth** — GitHub OAuth login with Auth.js (NextAuth v5)
 - **Cli-Chat** —  Terminal chat app with streaming responses, role-based history, and persistent conversations for Ollama and Anthropic.
+- **Rag-Demo** —  A from-scratch implementation of Retrieval-Augmented Generation (RAG) using Ollama, Docker, Postgres, PGVector, and Python
 
-**Tech:** Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic
+**Tech:** Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres
 
 ---
 
