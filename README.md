@@ -169,6 +169,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="./Web%20App%20Valley/Digital%20Hippo/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Job%20Board/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Netflix/Screenshot.png" width="220" />
+  <img src="./Web%20App%20Valley/Vercel-AI-Chat/Screenshot.png" width="220" />
 </div>
 
 ### Projects
@@ -185,7 +186,10 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Netflix**  
   Netflix-style UI clone using API-driven rows.
 
-**Tech:** Angular, Vue 3, React, Next.js, Tailwind CSS, Node.js
+- **Vercel AI Chat**
+  A local, cost-free streaming chat app built with Next.js 16, Vercel AI SDK v6, OpenAI provider, and Ollama -> Demonstrates `useChat`, streaming API routes, and tool calling.
+
+**Tech:** Angular, Vue 3, React, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama
 
 ---
 
