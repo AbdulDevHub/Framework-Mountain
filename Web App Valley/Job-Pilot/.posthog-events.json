@@ -1,0 +1,42 @@
+[
+  {
+    "event": "get_started_clicked",
+    "description": "User clicks 'Get Started' CTA on the homepage Hero section",
+    "file": "components/homepage/Hero.tsx"
+  },
+  {
+    "event": "find_first_match_clicked",
+    "description": "User clicks 'Find Your First Match' CTA on the homepage Hero section",
+    "file": "components/homepage/Hero.tsx"
+  },
+  {
+    "event": "cta_get_started_clicked",
+    "description": "User clicks 'Get Started' CTA in the bottom CTA section of the homepage",
+    "file": "components/homepage/CTASection.tsx"
+  },
+  {
+    "event": "cta_find_first_match_clicked",
+    "description": "User clicks 'Find Your First Match' CTA in the bottom CTA section of the homepage",
+    "file": "components/homepage/CTASection.tsx"
+  },
+  {
+    "event": "sign_in_provider_clicked",
+    "description": "User clicks a sign-in button on the login page, with provider (google or github) as a property",
+    "file": "components/auth/LoginCard.tsx"
+  },
+  {
+    "event": "user_signed_in",
+    "description": "Server-side: user completes OAuth and successfully exchanges the code for a session. Includes provider and whether the user is new (directed to /profile) or returning (directed to /dashboard)",
+    "file": "app/(auth)/callback/route.ts"
+  },
+  {
+    "event": "user_sign_in_failed",
+    "description": "Server-side: OAuth callback fails at any stage (missing code, exchange error, or upstream error). Includes an error_type property.",
+    "file": "app/(auth)/callback/route.ts"
+  },
+  {
+    "event": "user_signed_out",
+    "description": "Server-side: user explicitly signs out via the logout endpoint",
+    "file": "app/api/auth/logout/route.ts"
+  }
+]
