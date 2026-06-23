@@ -10,7 +10,6 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
 
 - 🧠 **Backend Valley** — Backend & full-stack foundations
 - 🧩 **Component Valley** — Reusable UI components
-- 🎨 **Creative Valley** — Visual & animation experiments
 - 🕷️ **Data Scrape Valley** — Web scraping & automation
 - 🎮 **Game Valley** — Browser-based games
 - 🌌 **Portfolio Valley** — Portfolio & personal showcase sites
@@ -62,25 +61,6 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
   Responsive image gallery with sidebar navigation.
 
 **Tech:** Svelte, React, Vue 2, Vuetify, SCSS, Rollup
-
----
-
-## 🎨 Creative Valley
-
-<div align="center">
-  <img src="./Creative%20Valley/3D%20Apple%20Homepage/Screenshot.png" width="220" />
-  <img src="./Creative%20Valley/Sky%20Diving%20Parallax%20Cat/Screenshot.png" width="220" />
-</div>
-
-### Projects
-
-- **3D Apple Homepage**  
-  3D product-style homepage using React and Vite with GLB models.
-
-- **Sky Diving Parallax Cat**  
-  Fun parallax animation experiment with layered assets.
-
-**Tech:** React, Vite, CSS, JavaScript
 
 ---
 
@@ -146,6 +126,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 ## 🔬 Tech Experiments
 
 <div align="center">
+  <img src="./Tech%20Experiments/Sky%20Diving%20Parallax%20Cat/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/Github-Actions-Reference/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/VitestTesting/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/Nextjs-OAuth/Screenshot.png" width="220" />
@@ -153,13 +134,15 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 
 ### Projects
 
+- **Sky Diving Parallax Cat**  
+  Fun parallax animation experiment with layered assets.
 - **Github Actions Reference** — CI/CD pipeline with type-checking, testing, linting, and Docker builds wired into GitHub Actions
 - **Vitest Testing** — Unit & integration testing with Vitest
 - **Nextjs OAuth** — GitHub OAuth login with Auth.js (NextAuth v5)
 - **Cli-Chat** —  Terminal chat app with streaming responses, role-based history, and persistent conversations for Ollama and Anthropic.
 - **Rag-Demo** —  A from-scratch implementation of Retrieval-Augmented Generation (RAG) using Ollama, Docker, Postgres, PGVector, and Python
 
-**Tech:** Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres
+**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres
 
 ---
 
@@ -168,9 +151,11 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 <div align="center">
   <img src="./Web%20App%20Valley/Angular%20Webshop/Screenshot1.png" width="220" />
   <img src="./Web%20App%20Valley/Digital%20Hippo/Screenshot.png" width="220" />
+  <img src="./Web%20App%20Valley/3D%20Apple%20Homepage/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Job%20Board/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Netflix/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Vercel-AI-Chat/Screenshot.png" width="220" />
+  <img src="./Web%20App%20Valley/Job-Pilot/context/designs/find-jobs.png" width="220" />
 </div>
 
 ### Projects
@@ -181,6 +166,9 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Digital Hippo**  
   Full-featured e-commerce platform with authentication, payments, and CMS.
 
+- **3D Apple Homepage**  
+  3D product-style homepage using React and Vite with GLB models.
+
 - **Job Board**  
   Vue-based CRUD job listing application with routing.
 
@@ -190,7 +178,10 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Vercel AI Chat**
   A local, cost-free streaming chat app built with Next.js 16, Vercel AI SDK v6, OpenAI provider, and Ollama -> Demonstrates `useChat`, streaming API routes, and tool calling.
 
-**Tech:** Angular, Vue 3, React, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama
+- **Job Pilot**
+  AI-powered job search assistance for matching roles, tailored resumes, and faster applications.
+
+**Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase
 
 ---
 
