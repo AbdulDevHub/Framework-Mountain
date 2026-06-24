@@ -142,6 +142,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Cli-Chat** —  Terminal chat app with streaming responses, role-based history, and persistent conversations for Ollama and Anthropic.
 - **Rag-Demo** —  A from-scratch implementation of Retrieval-Augmented Generation (RAG) using Ollama, Docker, Postgres, PGVector, and Python
 - **Bull-MQ-Demo** —  A from-scratch implementation of a production-ready email queue system using BullMQ, Docker, Redis, and JavaScript
+- **Pino-Demo** —  
 
 **Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ
 
@@ -157,6 +158,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="./Web%20App%20Valley/Netflix/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Vercel-AI-Chat/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Job-Pilot/context/designs/find-jobs.png" width="220" />
+  <img src="https://github.com/AbdulDevHub/Filmverse/blob/2dd550ae7c2cb23437bc1252460ef3859c758bd6/src/assets/images/Filmverse.png" width="220" />
 </div>
 
 ### Projects
@@ -182,6 +184,10 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Job Pilot**
   AI-powered job search assistance for matching roles, tailored resumes, and faster applications.
 
+- **Filmverse**
+  A modern React movie discovery app with TMDB integration, voice-enabled navigation (Alan AI), favorites & watchlists, and light/dark mode.
+
+
 **Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase
 
 ---
@@ -205,9 +211,78 @@ cd Valley/Project-Name
 pnpm import
 pnpm install
 pnpm dev
-````
+```
 
 Refer to individual project READMEs for project-specific setup.
+
+---
+
+## 🗂️ Repository Structure & Git Concepts
+
+Framework Mountain is a **monorepo** — a single Git repository that houses multiple independent projects, organized into category folders called Valleys. One `.git` folder at the root tracks all of them.
+
+### Why a Monorepo?
+- One place to clone, one place to push
+- Shared config (`.gitignore`, `.gitattributes`, `.vscode/`) applies across all projects
+- Easy cross-referencing between projects
+
+---
+
+### Cloning This Repo
+
+Some projects inside Framework Mountain are **Git Submodules** — they are separate, independent repositories linked into this one by a commit pointer. This means a plain `git clone` will leave those folders empty.
+
+Always clone with:
+
+```bash
+git clone --recurse-submodules https://github.com/AbdulDevHub/Framework-Mountain.git
+```
+
+If you already cloned without that flag, run:
+
+```bash
+git submodule update --init --recursive
+```
+
+---
+
+### Git Submodules
+
+A submodule is a pointer from this repo to a specific commit in another repo. The submodule folder exists inside Framework Mountain, but its contents are managed by the external repository.
+
+**Submodule projects in this repo:**
+
+| Project | Valley | Source |
+|---|---|---|
+| Filmverse | Web App Valley | [AbdulDevHub/Filmverse](https://github.com/AbdulDevHub/Filmverse) |
+
+**Updating a submodule to its latest version:**
+
+```bash
+cd "Web App Valley/Filmverse"
+git pull origin main
+cd ../..
+git add "Web App Valley/Filmverse"
+git commit -m "Update Filmverse submodule to latest"
+git push
+```
+
+**Pulling submodule updates after someone else updated the pointer:**
+
+```bash
+git pull
+git submodule update --recursive
+```
+
+---
+
+### Git Subtrees
+
+A subtree absorbs another repository's code and full Git history directly into this repo. Unlike submodules, there is no external dependency — the code is fully owned by Framework Mountain after the merge.
+
+This is used for projects that were developed locally with their own Git history and then brought into the monorepo permanently (e.g. projects in the Tech Experiments valley).
+
+> More detail on working with subtrees will be added here after the subtree workflow is established.
 
 ---
 
