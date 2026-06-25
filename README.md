@@ -220,8 +220,10 @@ Refer to individual project READMEs for project-specific setup.
 
 ## 🗂️ Repository Structure & Git Concepts
 
-<img src="Images/framework_mountain_structure.svg" width="250">
-<img src="Images/git_nesting_approaches_overview.svg" width="250">
+<div align="center">
+  <img src="Images/framework_mountain_structure.svg" width="250">
+  <img src="Images/git_nesting_approaches_overview.svg" width="250">
+</div>
 
 Framework Mountain is a **monorepo** — a single Git repository that houses multiple independent projects, organized into category folders called Valleys. One `.git` folder at the root tracks all of them.
 
