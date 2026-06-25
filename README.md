@@ -142,10 +142,11 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Cli-Chat** —  Terminal chat app with streaming responses, role-based history, and persistent conversations for Ollama and Anthropic.
 - **Rag-Demo** —  A from-scratch implementation of Retrieval-Augmented Generation (RAG) using Ollama, Docker, Postgres, PGVector, and Python
 - **Bull-MQ-Demo** —  A from-scratch implementation of a production-ready email queue system using BullMQ, Docker, Redis, and JavaScript
-- **Pino-Demo** —
-- **Git-Practice** —
+- **Pino-Demo** — Compared Using `console.log` and `pino`
+- **Git-Practice** — Practiced Git Merge/Rebase Strategies and Conflicts
+- **Webhook-Demo** — Received and verified webhooks using Stripe CLI and HMAC-SHA256 signature verification
 
-**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ
+**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ, Pino, Git, Stripe CLI
 
 ---
 
