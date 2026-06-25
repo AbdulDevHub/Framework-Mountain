@@ -230,7 +230,7 @@ Framework Mountain is a **monorepo** — a single Git repository that houses mul
 
 ### Cloning This Repo
 
-Some projects inside Framework Mountain are **Git Submodules** — they are separate, independent repositories linked into this one by a commit pointer. This means a plain `git clone` will leave those folders empty.
+Some projects inside Framework Mountain are **Git Submodules** — separate repositories linked into this one by a commit pointer. A plain `git clone` will leave those folders empty.
 
 Always clone with:
 
@@ -248,13 +248,21 @@ git submodule update --init --recursive
 
 ### Git Submodules
 
-A submodule is a pointer from this repo to a specific commit in another repo. The submodule folder exists inside Framework Mountain, but its contents are managed by the external repository.
+A submodule is a pointer from this repo to a specific commit in another repo. The submodule folder exists inside Framework Mountain, but its contents are managed by the external repository. Best used for external repos you don't own or that other projects also depend on.
 
 **Submodule projects in this repo:**
 
 | Project | Valley | Source |
 |---|---|---|
 | Filmverse | Web App Valley | [AbdulDevHub/Filmverse](https://github.com/AbdulDevHub/Filmverse) |
+
+**Adding a new submodule:**
+
+```bash
+git submodule add https://github.com/username/repo-name.git "Valley/Project-Name"
+git commit -m "Add repo-name as submodule in Valley"
+git push
+```
 
 **Updating a submodule to its latest version:**
 
@@ -278,11 +286,43 @@ git submodule update --recursive
 
 ### Git Subtrees
 
-A subtree absorbs another repository's code and full Git history directly into this repo. Unlike submodules, there is no external dependency — the code is fully owned by Framework Mountain after the merge.
+A subtree absorbs another repository's code into this repo. Unlike submodules, there is no external dependency — the code and a squashed snapshot of its history are fully merged into Framework Mountain. Best used for projects you own locally that have their own Git history.
 
-This is used for projects that were developed locally with their own Git history and then brought into the monorepo permanently (e.g. projects in the Tech Experiments valley).
+**How it works:**
+- The absorbed project's `.git` folder is removed — Framework Mountain's root `.git` takes over
+- With `--squash`, all original commits are collapsed into two merge commits in the monorepo log, keeping history clean
+- Branches from the original repo are not carried over — only the specified branch is pulled in
 
-> More detail on working with subtrees will be added here after the subtree workflow is established.
+**Subtree projects in this repo:**
+
+| Project | Valley | Original Branch |
+|---|---|---|
+| Git-Practice | Tech Experiments | master |
+
+**Adding a new subtree from a local project:**
+
+```bash
+# Step 1 — Register the local project as a temporary remote
+git remote add Project-Name "C:\path\to\local\project"
+
+# Step 2 — Pull its history into a subfolder
+git subtree add --prefix="Valley/Project-Name" Project-Name branch-name --squash
+
+# Step 3 — Remove the temporary remote (no longer needed)
+git remote remove Project-Name
+
+# Step 4 — Push to GitHub
+git push
+```
+
+**Adding a new subtree from a GitHub repo:**
+
+```bash
+git remote add Project-Name https://github.com/username/repo-name.git
+git subtree add --prefix="Valley/Project-Name" Project-Name main --squash
+git remote remove Project-Name
+git push
+```
 
 ---
 
