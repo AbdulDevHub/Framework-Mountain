@@ -130,6 +130,8 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="./Tech%20Experiments/Github-Actions-Reference/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/VitestTesting/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/Nextjs-OAuth/Screenshot.png" width="220" />
+  <img src="./Tech%20Experiments/My MCP Server/Screenshot.png" width="220" />
+  <img src="./Tech%20Experiments/N8N Workflows/Screenshot.png" width="220" />
 </div>
 
 ### Projects
@@ -145,8 +147,13 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Pino-Demo** — Compared Using `console.log` and `pino`
 - **Git-Practice** — Practiced Git Merge/Rebase Strategies and Conflicts
 - **Webhook-Demo** — Received and verified webhooks using Stripe CLI and HMAC-SHA256 signature verification
+- **My MCP Server** — A simple Model Context Protocol (MCP) server built with TypeScript, Node.js, Zod and MCP SDK.
+- **Bots-And-Hooks** — A practice repository for learning three essential tools that keep a codebase healthy and secure: **Husky**, **Dependabot**, and **Snyk**.
+- **Bun-Playground** — A hands-on learning project exploring [Bun](https://bun.sh)
+- **N8N Workflows** — A hands-on learning project exploring [N8N](https://n8n.io) and automated workflows
+- **LangChain-Practice** — Hands-on learning projects exploring LangChain (Built with Python and Streamlit)
 
-**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ, Pino, Git, Stripe CLI
+**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ, Pino, Git, Stripe CLI, Node.js, MCP SDK, Zod, Husky, Dependabot, Snyk, Bun, N8N, LangChain, Streamlit
 
 ---
 
@@ -189,7 +196,6 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Filmverse**
   A modern React movie discovery app with TMDB integration, voice-enabled navigation (Alan AI), favorites & watchlists, and light/dark mode.
 
-
 **Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase
 
 ---
@@ -229,6 +235,7 @@ Refer to individual project READMEs for project-specific setup.
 Framework Mountain is a **monorepo** — a single Git repository that houses multiple independent projects, organized into category folders called Valleys. One `.git` folder at the root tracks all of them.
 
 ### Why a Monorepo?
+
 - One place to clone, one place to push
 - Shared config (`.gitignore`, `.gitattributes`, `.vscode/`) applies across all projects
 - Easy cross-referencing between projects
@@ -296,6 +303,7 @@ git submodule update --recursive
 A subtree absorbs another repository's code into this repo. Unlike submodules, there is no external dependency — the code and a squashed snapshot of its history are fully merged into Framework Mountain. Best used for projects you own locally that have their own Git history.
 
 **How it works:**
+
 - The absorbed project's `.git` folder is removed — Framework Mountain's root `.git` takes over
 - With `--squash`, all original commits are collapsed into two merge commits in the monorepo log, keeping history clean
 - Branches from the original repo are not carried over — only the specified branch is pulled in
