@@ -37,7 +37,10 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
 - **Redis Learning**  
   Learning and experimentation with Redis, a distributed in-memory key-value store.
 
-**Tech:** Next.js, TypeScript, PostCSS, pnpm, Hono, Prisma, Supabase, Zod, Vitest, Redis, IoRedis, Docker
+- **Hackathon-Nestjs-Backend**  
+  A scalable API built with NestJS and Agentic Coding for managing hackathons
+
+**Tech:** Next.js, TypeScript, PostCSS, pnpm, Hono, Prisma, Supabase, Zod, Vitest, Redis, IoRedis, Docker, NestJS
 
 ---
 
