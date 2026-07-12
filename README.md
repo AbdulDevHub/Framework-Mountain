@@ -155,8 +155,9 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Bun-Playground** — A hands-on learning project exploring [Bun](https://bun.sh)
 - **N8N Workflows** — A hands-on learning project exploring [N8N](https://n8n.io) and automated workflows
 - **LangChain-Practice** — Hands-on learning projects exploring LangChain (Built with Python and Streamlit)
+- **GSAP-Practice** —  Hands-on learning exploring GSAP (Built with React, Vite, and Tailwind CSS)
 
-**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ, Pino, Git, Stripe CLI, Node.js, MCP SDK, Zod, Husky, Dependabot, Snyk, Bun, N8N, LangChain, Streamlit
+**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ, Pino, Git, Stripe CLI, Node.js, MCP SDK, Zod, Husky, Dependabot, Snyk, Bun, N8N, LangChain, Streamlit, GSAP
 
 ---
 
