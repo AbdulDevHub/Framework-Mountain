@@ -1,8 +1,10 @@
 {
   "markdownlint.config": {
     "MD033": {
-      "allowed_elements": ["br", "img", "kbd"]
-    }
+      "allowed_elements": ["br", "img", "kbd", "div"]
+    },
+    "MD045": false,
+    "MD024": false
   },
   "prettier.printWidth": 110,
   "snyk.advanced.organization": "9b11eee6-8712-4a7d-a031-81648efca179",

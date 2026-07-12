@@ -135,6 +135,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="./Tech%20Experiments/Nextjs-OAuth/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/My MCP Server/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/N8N Workflows/Screenshot.png" width="220" />
+  <img src="./Tech%20Experiments/GSAP-Practice/public/preview.png" width="220" />
 </div>
 
 ### Projects
@@ -172,6 +173,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="./Web%20App%20Valley/Vercel-AI-Chat/Screenshot.png" width="220" />
   <img src="./Web%20App%20Valley/Job-Pilot/context/designs/find-jobs.png" width="220" />
   <img src="https://github.com/AbdulDevHub/Filmverse/blob/2dd550ae7c2cb23437bc1252460ef3859c758bd6/src/assets/images/Filmverse.png" width="220" />
+  <img src="./Web%20App%20Valley/GSAP%20Drinks/Screenshot.png" width="220" />
 </div>
 
 ### Projects
@@ -200,7 +202,10 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Filmverse**
   A modern React movie discovery app with TMDB integration, voice-enabled navigation (Alan AI), favorites & watchlists, and light/dark mode.
 
-**Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase
+- **GSAP Drinks**
+  A modern drinks website built with React and TailwindCSS, featuring smooth GSAP animations such as SplitText reveals, scroll-triggered effects, parallax scrolling, and a custom carousel.
+
+**Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase, GSAP
 
 ---
 
@@ -315,7 +320,7 @@ A subtree absorbs another repository's code into this repo. Unlike submodules, t
 **Subtree projects in this repo:**
 
 | Project | Valley | Original Branch |
-|---|---|---|
+| --- | --- | --- |
 | Git-Practice | Tech Experiments | master |
 
 **Adding a new subtree from a local project:**
