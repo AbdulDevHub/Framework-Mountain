@@ -175,6 +175,8 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="https://github.com/AbdulDevHub/Filmverse/blob/2dd550ae7c2cb23437bc1252460ef3859c758bd6/src/assets/images/Filmverse.png" width="220" />
   <img src="./App%20Valley/GSAP%20Drinks/Screenshot.png" width="220" />
   <img src="./App%20Valley/NoteMark/Screenshot.png" width="220" />
+  <img src="./App%20Valley/Screen%20Recorder/Screenshot.png" width="220" />
+  <img src="./App%20Valley/Image%20Resizer/assets/screen.png" width="220" />
 </div>
 
 ### Projects
@@ -208,15 +210,27 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 
 - **CaseCobra**  
   A full-stack e-commerce shop for custom phone cases. Features a drag-and-drop phone case configurator, secret admin dashboard for order management, Stripe payments, Kinde authentication, and transactional thank-you emails. Built on Next.js 14 App Router with shadcn-ui.  
+  **Tech:** Next.js 14, TypeScript, PostgreSQL, Tailwind CSS, shadcn-ui, Stripe, Kinde Auth, drag-and-drop file uploads
 
 - **Glisten AI**  
   A sleek, dark, animated marketing website in the style of Linear, Raycast, and Clerk. Features GSAP scroll and load animations, and Prismic as a headless CMS for content management.  
+  **Tech:** Next.js 14, TypeScript, GSAP, Prismic (headless CMS), Tailwind CSS, Vercel
 
 - **Modern AliExpress**  
   A full-stack e-commerce web app cloning AliExpress with a modernized UI. Includes Google and GitHub OAuth, Stripe payment integration, and a Supabase-backed PostgreSQL database managed via Prisma ORM.  
+  **Tech:** Vue.js, Nuxt.js, Tailwind CSS, Prisma ORM, Supabase (PostgreSQL), Stripe, OAuth (Google, GitHub), Vercel
 
 - **NoteMark**  
   A cross-platform desktop note-taking app with native Markdown support. Installable on Mac, Windows, and Linux.  
+  **Tech:** Electron, React, TypeScript/JavaScript, Markdown, yarn
+
+- **Screen Recorder**  
+  A versatile cross-platform desktop screen recorder. Lets users select a specific screen, window, or stream to record. Compatible with macOS, Windows, and Linux.  
+  **Tech:** Electron.js, JavaScript, HTML, CSS
+
+- **Image Resizer**  
+  A desktop tool for selecting an image and easily changing its width and/or height.  
+  **Tech:** Electron.js, JavaScript, HTML, CSS
 
 **Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase, GSAP, PostgreSQL, shadcn-ui, Stripe, Kinde Auth, Prismic, Nuxt.js, Prisma ORM, Supabase, OAuth, Electron, Markdown, yarn
 
@@ -340,6 +354,8 @@ A subtree absorbs another repository's code into this repo. Unlike submodules, t
 | Project | Valley | Original Branch |
 | --- | --- | --- |
 | Git-Practice | Tech Experiments | master |
+| Screen Recorder | App Valley | split-screen-recorder (from Electron-Mountain) |
+| Image Resizer | App Valley | split-image-resizer (from Electron-Mountain) |
 
 **Adding a new subtree from a local project:**
 
@@ -363,6 +379,26 @@ git push
 git remote add Project-Name https://github.com/username/repo-name.git
 git subtree add --prefix="Valley/Project-Name" Project-Name main --squash
 git remote remove Project-Name
+```
+
+**Adding subtrees from a source repo that contains multiple projects:**
+
+A plain `subtree add` pulls in the *entire* source repo's tree at the given prefix — fine for a single-project repo, but wrong if the source repo bundles several independent projects in subfolders (each would need its own prefix). In that case, split each subfolder into its own history first, then add each split separately:
+
+```bash
+# In a local clone of the source repo
+git clone https://github.com/username/multi-project-repo.git
+cd multi-project-repo
+git subtree split --prefix="Project-A" -b split-project-a
+git subtree split --prefix="Project-B" -b split-project-b
+cd ..
+
+# Back in Framework Mountain
+git remote add multi-project-repo "./multi-project-repo"   # or its GitHub URL
+git fetch multi-project-repo
+git subtree add --prefix="Valley/Project-A" multi-project-repo split-project-a --squash
+git subtree add --prefix="Valley/Project-B" multi-project-repo split-project-b --squash
+git remote remove multi-project-repo
 git push
 ```
 
