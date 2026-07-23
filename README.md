@@ -14,7 +14,7 @@ All projects are **self-contained**, framework-diverse, and built for hands-on l
 - 🎮 **Game Valley** — Browser-based games
 - 🌌 **Portfolio Valley** — Portfolio & personal showcase sites
 - 🔬 **Tech Experiments** — Tooling, CI/CD pipelines, and developer workflow setups
-- 🕸️ **Web App Valley** — Full web applications & clones
+- 🕸️ **App Valley** — Full web & desktop applications and clones
 
 ---
 
@@ -162,18 +162,19 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 
 ---
 
-## 🕸️ Web App Valley
+## 🕸️ App Valley
 
 <div align="center">
-  <img src="./Web%20App%20Valley/Angular%20Webshop/Screenshot1.png" width="220" />
-  <img src="./Web%20App%20Valley/Digital%20Hippo/Screenshot.png" width="220" />
-  <img src="./Web%20App%20Valley/3D%20Apple%20Homepage/Screenshot.png" width="220" />
-  <img src="./Web%20App%20Valley/Job%20Board/Screenshot.png" width="220" />
-  <img src="./Web%20App%20Valley/Netflix/Screenshot.png" width="220" />
-  <img src="./Web%20App%20Valley/Vercel-AI-Chat/Screenshot.png" width="220" />
-  <img src="./Web%20App%20Valley/Job-Pilot/context/designs/find-jobs.png" width="220" />
+  <img src="./App%20Valley/Angular%20Webshop/Screenshot1.png" width="220" />
+  <img src="./App%20Valley/Digital%20Hippo/Screenshot.png" width="220" />
+  <img src="./App%20Valley/3D%20Apple%20Homepage/Screenshot.png" width="220" />
+  <img src="./App%20Valley/Job%20Board/Screenshot.png" width="220" />
+  <img src="./App%20Valley/Netflix/Screenshot.png" width="220" />
+  <img src="./App%20Valley/Vercel-AI-Chat/Screenshot.png" width="220" />
+  <img src="./App%20Valley/Job-Pilot/context/designs/find-jobs.png" width="220" />
   <img src="https://github.com/AbdulDevHub/Filmverse/blob/2dd550ae7c2cb23437bc1252460ef3859c758bd6/src/assets/images/Filmverse.png" width="220" />
-  <img src="./Web%20App%20Valley/GSAP%20Drinks/Screenshot.png" width="220" />
+  <img src="./App%20Valley/GSAP%20Drinks/Screenshot.png" width="220" />
+  <img src="./App%20Valley/NoteMark/Screenshot.png" width="220" />
 </div>
 
 ### Projects
@@ -205,16 +206,29 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **GSAP Drinks**
   A modern drinks website built with React and TailwindCSS, featuring smooth GSAP animations such as SplitText reveals, scroll-triggered effects, parallax scrolling, and a custom carousel.
 
-**Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase, GSAP
+- **CaseCobra**  
+  A full-stack e-commerce shop for custom phone cases. Features a drag-and-drop phone case configurator, secret admin dashboard for order management, Stripe payments, Kinde authentication, and transactional thank-you emails. Built on Next.js 14 App Router with shadcn-ui.  
+
+- **Glisten AI**  
+  A sleek, dark, animated marketing website in the style of Linear, Raycast, and Clerk. Features GSAP scroll and load animations, and Prismic as a headless CMS for content management.  
+
+- **Modern AliExpress**  
+  A full-stack e-commerce web app cloning AliExpress with a modernized UI. Includes Google and GitHub OAuth, Stripe payment integration, and a Supabase-backed PostgreSQL database managed via Prisma ORM.  
+
+- **NoteMark**  
+  A cross-platform desktop note-taking app with native Markdown support. Installable on Mac, Windows, and Linux.  
+
+**Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase, GSAP, PostgreSQL, shadcn-ui, Stripe, Kinde Auth, Prismic, Nuxt.js, Prisma ORM, Supabase, OAuth, Electron, Markdown, yarn
 
 ---
 
 ## 🛠️ Skills Demonstrated
 
-- **Frameworks:** React, Svelte, SvelteKit, Vue, Angular, Next.js
-- **Styling:** Tailwind CSS, SCSS, Vuetify, CSS animations
-- **Backend & Data:** Node.js, Puppeteer, API integration
-- **3D & Motion:** Three.js, asset-driven animation
+- **Frameworks & Platforms:** React, Svelte, SvelteKit, Vue, Angular, Next.js, Nuxt.js, Electron (desktop)
+- **Styling:** Tailwind CSS, SCSS, Vuetify, CSS animations, shadcn-ui
+- **Backend & Data:** Node.js, Puppeteer, API integration, PostgreSQL, Prisma ORM, Supabase
+- **3D & Motion:** Three.js, asset-driven animation, GSAP
+- **Auth & Payments:** Stripe, Kinde Auth, OAuth (Google, GitHub)
 - **Architecture:** Component-based design, modular folders
 
 ---
@@ -277,7 +291,11 @@ A submodule is a pointer from this repo to a specific commit in another repo. Th
 
 | Project | Valley | Source |
 |---|---|---|
-| Filmverse | Web App Valley | [AbdulDevHub/Filmverse](https://github.com/AbdulDevHub/Filmverse) |
+| Filmverse | App Valley | [AbdulDevHub/Filmverse](https://github.com/AbdulDevHub/Filmverse) |
+| CaseCobra | App Valley | [AbdulDevHub/Case-Cobra](https://github.com/AbdulDevHub/Case-Cobra) |
+| Glisten AI | App Valley | [AbdulDevHub/Glisten-AI](https://github.com/AbdulDevHub/Glisten-AI) |
+| Modern AliExpress | App Valley | [AbdulDevHub/Modern-AliExpress](https://github.com/AbdulDevHub/Modern-AliExpress) |
+| NoteMark | App Valley | [AbdulDevHub/NoteMark](https://github.com/AbdulDevHub/NoteMark) |
 
 **Adding a new submodule:**
 
@@ -290,10 +308,10 @@ git push
 **Updating a submodule to its latest version:**
 
 ```bash
-cd "Web App Valley/Filmverse"
+cd "App Valley/Filmverse"
 git pull origin main
 cd ../..
-git add "Web App Valley/Filmverse"
+git add "App Valley/Filmverse"
 git commit -m "Update Filmverse submodule to latest"
 git push
 ```
