@@ -1,3 +1,15 @@
 [submodule "Web App Valley/Filmverse"]
-	path = Web App Valley/Filmverse
+	path = App Valley/Filmverse
 	url = https://github.com/AbdulDevHub/Filmverse.git
+[submodule "App Valley/CaseCobra"]
+	path = App Valley/CaseCobra
+	url = https://github.com/AbdulDevHub/Case-Cobra.git
+[submodule "App Valley/Glisten AI"]
+	path = App Valley/Glisten AI
+	url = https://github.com/AbdulDevHub/Glisten-AI.git
+[submodule "App Valley/Modern AliExpress"]
+	path = App Valley/Modern AliExpress
+	url = https://github.com/AbdulDevHub/Modern-AliExpress.git
+[submodule "App Valley/NoteMark"]
+	path = App Valley/NoteMark
+	url = https://github.com/AbdulDevHub/NoteMark.git
