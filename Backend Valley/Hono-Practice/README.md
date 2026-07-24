@@ -2,16 +2,19 @@
 
 ![My Screenshot](./Screenshot.png)
 
-A REST API built with [Hono](https://hono.dev/), [Prisma](https://www.prisma.io/), and [Supabase](https://supabase.com/) (PostgreSQL). Built as a learning project covering HTTP fundamentals, input validation, JWT authentication, password hashing, database integration, security hardening, and testing.
+A REST + tRPC API built with [Hono](https://hono.dev/), [Prisma](https://www.prisma.io/), and [Supabase](https://supabase.com/) (PostgreSQL). Built as a learning project covering HTTP fundamentals, input validation, JWT authentication, password hashing, database integration, security hardening, testing, and end-to-end type-safe APIs with tRPC.
+
+A companion Next.js client demonstrating full-stack type inference lives in [`trpc-frontend/`](./trpc-frontend/README.md).
 
 ---
 
 ## Stack
 
 - **[Hono](https://hono.dev/)** — lightweight TypeScript web framework
+- **[tRPC](https://trpc.io/)** — end-to-end type-safe API layer, mounted alongside the REST routes
 - **[Prisma](https://www.prisma.io/)** — ORM for database access
 - **[Supabase](https://supabase.com/)** — hosted PostgreSQL database
-- **[Zod](https://zod.dev/)** — schema validation (including environment variable validation at startup)
+- **[Zod](https://zod.dev/)** — schema validation (env vars, REST bodies, and tRPC procedure inputs)
 - **[jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)** — JWT signing and verification
 - **[bcrypt](https://github.com/kelektiv/node.bcrypt.js)** — password hashing
 - **[hono/secure-headers](https://hono.dev/docs/middleware/builtin/secure-headers)** — HTTP security headers
@@ -35,12 +38,19 @@ hono-practice/
 │   │   ├── prisma.ts        # Shared Prisma client
 │   │   └── env.ts           # Zod-validated environment config (fails fast at startup)
 │   ├── middleware/
-│   │   └── auth.ts          # JWT auth middleware
+│   │   └── auth.ts          # JWT auth middleware (REST routes)
 │   ├── routes/
 │   │   ├── auth.ts          # /register and /login routes
-│   │   └── tasks.ts         # Tasks CRUD routes (with pagination)
-│   ├── index.ts             # App setup, middleware, and route mounting
+│   │   └── tasks.ts         # REST tasks CRUD routes (with pagination)
+│   ├── trpc/
+│   │   ├── context.ts       # Per-request context — decodes JWT, exposes Prisma
+│   │   ├── trpc.ts          # tRPC init, publicProcedure, protectedProcedure
+│   │   ├── router.ts        # Root appRouter — exports the AppRouter type
+│   │   └── routers/
+│   │       └── tasks.ts     # tRPC tasks procedures (list/create/update/delete)
+│   ├── index.ts             # App setup, middleware, and route mounting (REST + /trpc/*)
 │   └── server.ts            # Server entrypoint
+├── trpc-frontend/           # Next.js client — see its own README
 ├── prisma.config.ts         # Prisma configuration
 ├── vitest.config.ts         # Vitest configuration
 └── .env                     # Environment variables (never commit this)
@@ -73,10 +83,10 @@ DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler
 JWT_SECRET="your-long-random-secret-here"
 
 # Comma-separated list of allowed frontend origins for CORS
-ALLOWED_ORIGINS=http://localhost:5173,https://yourfrontend.com
+ALLOWED_ORIGINS=http://localhost:5173,https://yourfrontend.com,http://localhost:3001
 ```
 
-Get your connection strings from your Supabase project under **Settings → Database → Connection string**.
+Get your connection strings from your Supabase project under **Settings → Database → Connection string**. Note the `http://localhost:3001` entry — that's the Next.js frontend's dev port, required for its tRPC client to call this API without hitting CORS.
 
 > **Note:** All environment variables are validated at startup using Zod (`src/lib/env.ts`). If a required variable is missing or malformed, the app exits immediately with a clear error message rather than failing silently at runtime.
 
@@ -92,7 +102,7 @@ npx prisma migrate dev
 npm run dev
 ```
 
-Server runs at `http://localhost:3000`.
+Server runs at `http://localhost:3000` — both the REST routes (`/auth`, `/tasks`) and the tRPC endpoint (`/trpc/*`) are served from this one process.
 
 ---
 
@@ -146,7 +156,7 @@ npx prisma migrate dev
 
 ### CORS
 
-This API uses Hono's built-in CORS middleware configured with an explicit origin allowlist. The `ALLOWED_ORIGINS` environment variable controls which frontend URLs are permitted to make cross-origin requests.
+This API uses Hono's built-in CORS middleware configured with an explicit origin allowlist. The `ALLOWED_ORIGINS` environment variable controls which frontend URLs are permitted to make cross-origin requests — this applies to both the REST routes and the tRPC endpoint, since both are mounted on the same Hono app.
 
 ```
 ALLOWED_ORIGINS=http://localhost:5173,https://yourfrontend.com
@@ -180,10 +190,10 @@ Key headers and what they do:
 
 ### Authentication
 
-This API uses **JWT (JSON Web Token)** authentication.
+This API uses **JWT (JSON Web Token)** authentication, shared identically across REST and tRPC.
 
 1. Register or log in via `/auth/register` or `/auth/login` — both return a token
-2. Include that token as a `Bearer` header on all `/tasks` requests
+2. Include that token as a `Bearer` header on all `/tasks` REST requests, or all `/trpc/tasks.*` procedure calls
 
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
@@ -191,11 +201,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 
 Passwords are never stored in plaintext. They are hashed with **bcrypt** before being saved to the database, and compared using bcrypt on login — the original password is never recoverable from the stored hash.
 
-JWTs are signed with `JWT_SECRET` and expire after **7 days**. The server verifies the signature on every request — a tampered or expired token is rejected with `401`.
+JWTs are signed with `JWT_SECRET` and expire after **7 days**. Both the REST auth middleware (`src/middleware/auth.ts`) and the tRPC context (`src/trpc/context.ts`) independently verify the signature on every request — a tampered or expired token is rejected with `401` / `UNAUTHORIZED`.
 
 ---
 
-## API Reference
+## API Reference (REST)
 
 ### POST /auth/register
 
@@ -371,9 +381,26 @@ Authorization: Bearer <token>
 
 ---
 
+## API Reference (tRPC)
+
+Mounted at `/trpc/*` via [`@hono/trpc-server`](https://github.com/honojs/middleware). The full typed surface, mirroring the REST routes above:
+
+| Procedure | Type | Equivalent REST route |
+|---|---|---|
+| `tasks.list` | `query` | `GET /tasks` |
+| `tasks.create` | `mutation` | `POST /tasks` |
+| `tasks.update` | `mutation` | `PUT /tasks/:id` |
+| `tasks.delete` | `mutation` | `DELETE /tasks/:id` |
+
+All `tasks.*` procedures are protected — they require the same `Authorization: Bearer <token>` header, verified via `src/trpc/context.ts`. Inputs are validated with Zod on every procedure; validation failures return a `BAD_REQUEST` `TRPCError` automatically, no manual response-writing required.
+
+The client-side type inference for this router is demonstrated end-to-end in [`trpc-frontend/`](./trpc-frontend/README.md).
+
+---
+
 ## Pagination
 
-`GET /tasks` supports two pagination strategies.
+`GET /tasks` (and `tasks.list` on the tRPC side) support two pagination strategies.
 
 **Cursor-based** is what production APIs use. Instead of skipping N rows, the client passes the `id` of the last item it received. The database finds that row by index and returns everything after it — unaffected by new inserts and fast at any depth.
 
@@ -459,6 +486,10 @@ Or push to your main branch if you have auto-deploy enabled.
 - REST API design with correct HTTP methods and status codes
 - Sub-router pattern with Hono (`app.route()`)
 - Request body validation with Zod (`safeParse`)
+- **tRPC router and procedure model, mounted alongside REST via `@hono/trpc-server`**
+- **Zod-validated tRPC procedure inputs — validation runs before your handler, no manual checks**
+- **Protected procedures via tRPC middleware, as a contrast to path-based auth middleware**
+- **End-to-end type inference — the `AppRouter` type flows into a Next.js client with zero manual client types (see `trpc-frontend/`)**
 - Environment variable validation with Zod at startup — fails fast with a clear error if config is missing
 - CORS configuration with an explicit origin allowlist — understands why `*` breaks credentialed requests
 - HTTP security headers via `hono/secure-headers` — CSP, HSTS, clickjacking protection, and more

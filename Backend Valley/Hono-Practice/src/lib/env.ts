@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import 'dotenv/config'  // Load environment variables from .env file
 
 const envSchema = z.object({
   // DATABASE_URL and DIRECT_URL must be a valid URL string
