@@ -4,6 +4,8 @@ import { useState } from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { httpBatchLink } from "@trpc/client"
 import { trpc } from "./client"
+import { getToken } from "./auth"
+import { API_BASE_URL } from "./config"
 
 export function TRPCProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient())
@@ -12,14 +14,14 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:3000/trpc",
+          url: `${API_BASE_URL}/trpc`,
           headers() {
-            // Hardcoded for now so we can prove the wiring works end-to-end.
-            // We'll swap this for a real stored token shortly.
-            return {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYTNkNDg4OC1mMjNhLTQ3MzgtYTQwZC04ODEyM2ZkODNjNjgiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJpYXQiOjE3ODQ5MTU4NzksImV4cCI6MTc4NTUyMDY3OX0.4qAzNc6S0MEkZnyXpeLARa0ACLveCmjQIij140U5gXY",
-            }
+            // Read fresh on every request rather than capturing a stale
+            // value at Provider mount time — this way login/logout take
+            // effect on the very next request without needing to recreate
+            // the whole tRPC client.
+            const token = getToken()
+            return token ? { Authorization: `Bearer ${token}` } : {}
           },
         }),
       ],

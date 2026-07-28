@@ -4,7 +4,7 @@
 
 A REST + tRPC API built with [Hono](https://hono.dev/), [Prisma](https://www.prisma.io/), and [Supabase](https://supabase.com/) (PostgreSQL). Built as a learning project covering HTTP fundamentals, input validation, JWT authentication, password hashing, database integration, security hardening, testing, and end-to-end type-safe APIs with tRPC.
 
-A companion Next.js client demonstrating full-stack type inference lives in [`trpc-frontend/`](./trpc-frontend/README.md).
+A companion Next.js client demonstrating full-stack type inference — including a login flow against this API — lives in [`trpc-frontend/`](./trpc-frontend/README.md).
 
 ---
 
@@ -27,27 +27,29 @@ A companion Next.js client demonstrating full-stack type inference lives in [`tr
 ```
 hono-practice/
 ├── prisma/
-│   ├── schema.prisma        # Database schema (Task + User models)
+│   ├── schema.prisma        # Database schema (Task + User models, with ownership relation)
 │   └── migrations/          # Migration history
 ├── src/
 │   ├── __tests__/
 │   │   ├── mocks/
-│   │   │   └── prisma.ts    # Shared Prisma mock
-│   │   └── tasks.test.ts    # Route tests (auth + tasks)
+│   │   │   └── prisma.ts        # Shared Prisma mock
+│   │   ├── tasks.test.ts        # REST route tests (auth + tasks, incl. ownership scoping)
+│   │   └── tasks.trpc.test.ts   # tRPC procedure tests (called directly, no HTTP)
 │   ├── lib/
+│   │   ├── auth.ts          # Shared JWT verification — single source of truth for both REST and tRPC
 │   │   ├── prisma.ts        # Shared Prisma client
 │   │   └── env.ts           # Zod-validated environment config (fails fast at startup)
 │   ├── middleware/
-│   │   └── auth.ts          # JWT auth middleware (REST routes)
+│   │   └── auth.ts          # JWT auth middleware (REST routes) — delegates to lib/auth.ts
 │   ├── routes/
 │   │   ├── auth.ts          # /register and /login routes
-│   │   └── tasks.ts         # REST tasks CRUD routes (with pagination)
+│   │   └── tasks.ts         # REST tasks CRUD routes (pagination + per-user ownership)
 │   ├── trpc/
-│   │   ├── context.ts       # Per-request context — decodes JWT, exposes Prisma
-│   │   ├── trpc.ts          # tRPC init, publicProcedure, protectedProcedure
+│   │   ├── context.ts       # Per-request context — decodes JWT via lib/auth.ts, exposes Prisma
+│   │   ├── trpc.ts          # tRPC init, publicProcedure, protectedProcedure (auth middleware)
 │   │   ├── router.ts        # Root appRouter — exports the AppRouter type
 │   │   └── routers/
-│   │       └── tasks.ts     # tRPC tasks procedures (list/create/update/delete)
+│   │       └── tasks.ts     # tRPC tasks procedures (list/create/update/delete, per-user ownership)
 │   ├── index.ts             # App setup, middleware, and route mounting (REST + /trpc/*)
 │   └── server.ts            # Server entrypoint
 ├── trpc-frontend/           # Next.js client — see its own README
@@ -177,7 +179,7 @@ curl -I http://localhost:3000/
 Key headers and what they do:
 
 | Header | Value | Purpose |
-|--------|-------|---------|
+| -------- | ------- | --------- |
 | `X-Frame-Options` | `SAMEORIGIN` | Prevents clickjacking via iframes |
 | `X-Content-Type-Options` | `nosniff` | Stops browsers from guessing content types |
 | `Strict-Transport-Security` | `max-age=15552000` | Forces HTTPS (production only) |
@@ -201,7 +203,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 
 Passwords are never stored in plaintext. They are hashed with **bcrypt** before being saved to the database, and compared using bcrypt on login — the original password is never recoverable from the stored hash.
 
-JWTs are signed with `JWT_SECRET` and expire after **7 days**. Both the REST auth middleware (`src/middleware/auth.ts`) and the tRPC context (`src/trpc/context.ts`) independently verify the signature on every request — a tampered or expired token is rejected with `401` / `UNAUTHORIZED`.
+JWTs are signed with `JWT_SECRET` and expire after **7 days**. Verification itself lives in one place — `src/lib/auth.ts` (`verifyToken`) — and both the REST auth middleware (`src/middleware/auth.ts`) and the tRPC context (`src/trpc/context.ts`) call into it rather than each independently decoding the token. A tampered or expired token is rejected with `401` / `UNAUTHORIZED` either way.
+
+### Authorization (task ownership)
+
+Authentication proves *who* you are; authorization proves *what you're allowed to touch*. Every `Task` row has a `userId` foreign key, and every query — list, create, update, delete, on both REST and tRPC — is scoped to `ctx.userId` / `c.get("userId")` from the verified JWT:
+
+- **`tasks.list` / `GET /tasks`** — only returns tasks where `userId` matches the caller. Another user's tasks are invisible, not just hidden client-side.
+- **`tasks.create` / `POST /tasks`** — the new task's `userId` is always taken from the JWT, never from client input.
+- **`tasks.update` / `PUT /tasks/:id`** and **`tasks.delete` / `DELETE /tasks/:id`** — the ownership check is baked directly into the query (`where: { id, userId }`), not done as a separate "fetch then check" step. If the `id` belongs to someone else, the query matches zero rows and returns `404`.
+
+That last point is a deliberate choice: a task that exists but belongs to another user returns the same `404 Not Found` as a task that doesn't exist at all — never a `403 Forbidden`. This mirrors the login endpoint's existing behaviour of never revealing which of email/password was wrong: a `403` would confirm the id exists, which is information an attacker probing ids shouldn't get for free.
 
 ---
 
@@ -212,6 +224,7 @@ JWTs are signed with `JWT_SECRET` and expire after **7 days**. Both the REST aut
 Creates a new user account and returns a JWT.
 
 **Request**
+
 ```
 POST /auth/register
 Content-Type: application/json
@@ -223,6 +236,7 @@ Content-Type: application/json
 ```
 
 **Response `201`**
+
 ```json
 { "token": "eyJhbGciOiJIUzI1NiJ9..." }
 ```
@@ -238,6 +252,7 @@ Content-Type: application/json
 Logs in an existing user and returns a JWT.
 
 **Request**
+
 ```
 POST /auth/login
 Content-Type: application/json
@@ -249,6 +264,7 @@ Content-Type: application/json
 ```
 
 **Response `200`**
+
 ```json
 { "token": "eyJhbGciOiJIUzI1NiJ9..." }
 ```
@@ -259,15 +275,17 @@ Content-Type: application/json
 
 ### GET /tasks
 
-Returns tasks with pagination. Supports two modes:
+Returns tasks belonging to the authenticated user, with pagination. Supports two modes:
 
 **Cursor pagination** (preferred — pass a cursor from a previous response):
+
 ```
 GET /tasks?limit=10&cursor=<id>
 Authorization: Bearer <token>
 ```
 
 **Offset pagination** (fallback — pass a page number):
+
 ```
 GET /tasks?limit=10&page=2
 Authorization: Bearer <token>
@@ -276,6 +294,7 @@ Authorization: Bearer <token>
 `limit` defaults to `10` and is capped at `100`.
 
 **Cursor response `200`**
+
 ```json
 {
   "data": [
@@ -288,6 +307,7 @@ Authorization: Bearer <token>
 `nextCursor` is `null` when you've reached the last page. Pass it as `?cursor=` on the next request to fetch the next page.
 
 **Offset response `200`**
+
 ```json
 {
   "data": [...],
@@ -302,9 +322,10 @@ Authorization: Bearer <token>
 
 ### POST /tasks
 
-Creates a new task.
+Creates a new task, owned by the authenticated user.
 
 **Request**
+
 ```
 POST /tasks
 Authorization: Bearer <token>
@@ -316,6 +337,7 @@ Content-Type: application/json
 ```
 
 **Response `201`**
+
 ```json
 {
   "id": "uuid",
@@ -331,9 +353,10 @@ Content-Type: application/json
 
 ### PUT /tasks/:id
 
-Updates a task's title and/or done status. Both fields are optional.
+Updates a task's title and/or done status. Both fields are optional. Only works on tasks owned by the authenticated user.
 
 **Request**
+
 ```
 PUT /tasks/:id
 Authorization: Bearer <token>
@@ -349,15 +372,16 @@ Content-Type: application/json
 
 **Response `400`** — if body fails validation.
 
-**Response `404`** — if task does not exist.
+**Response `404`** — if the task does not exist, **or if it exists but belongs to another user** (both cases are indistinguishable by design — see [Authorization](#authorization-task-ownership)).
 
 ---
 
 ### DELETE /tasks/:id
 
-Deletes a task.
+Deletes a task. Only works on tasks owned by the authenticated user.
 
 **Request**
+
 ```
 DELETE /tasks/:id
 Authorization: Bearer <token>
@@ -365,18 +389,18 @@ Authorization: Bearer <token>
 
 **Response `204`** — no body.
 
-**Response `404`** — if task does not exist.
+**Response `404`** — if the task does not exist, **or if it exists but belongs to another user**.
 
 ---
 
 ### Error responses
 
 | Status | Meaning | When |
-|--------|---------|------|
+| -------- | --------- | ------ |
 | `400` | Bad Request | Input is missing or invalid |
 | `401` | Unauthorized | Missing, invalid, or expired token |
 | `409` | Conflict | Email already registered |
-| `404` | Not Found | Resource does not exist |
+| `404` | Not Found | Resource does not exist, or belongs to another user |
 | `500` | Internal Server Error | Unexpected server error |
 
 ---
@@ -386,15 +410,17 @@ Authorization: Bearer <token>
 Mounted at `/trpc/*` via [`@hono/trpc-server`](https://github.com/honojs/middleware). The full typed surface, mirroring the REST routes above:
 
 | Procedure | Type | Equivalent REST route |
-|---|---|---|
+| --- | --- | --- |
 | `tasks.list` | `query` | `GET /tasks` |
 | `tasks.create` | `mutation` | `POST /tasks` |
 | `tasks.update` | `mutation` | `PUT /tasks/:id` |
 | `tasks.delete` | `mutation` | `DELETE /tasks/:id` |
 
-All `tasks.*` procedures are protected — they require the same `Authorization: Bearer <token>` header, verified via `src/trpc/context.ts`. Inputs are validated with Zod on every procedure; validation failures return a `BAD_REQUEST` `TRPCError` automatically, no manual response-writing required.
+All `tasks.*` procedures use `protectedProcedure` — a tRPC middleware (`src/trpc/trpc.ts`) that checks `ctx.userId` once and throws `UNAUTHORIZED` if it's missing, so individual procedures never repeat that check themselves. `ctx.userId` is populated in `src/trpc/context.ts` from the same JWT verification (`src/lib/auth.ts`) the REST middleware uses.
 
-The client-side type inference for this router is demonstrated end-to-end in [`trpc-frontend/`](./trpc-frontend/README.md).
+Every procedure additionally scopes its Prisma query to `ctx.userId` — see [Authorization](#authorization-task-ownership). Inputs are validated with Zod on every procedure; validation failures return a `BAD_REQUEST` `TRPCError` automatically, no manual response-writing required. Ownership violations on `update`/`delete` return `NOT_FOUND`, matching the REST behaviour exactly.
+
+The client-side type inference for this router — including the login flow — is demonstrated end-to-end in [`trpc-frontend/`](./trpc-frontend/README.md).
 
 ---
 
@@ -418,7 +444,8 @@ Tests use Vitest with mocked Prisma, `jsonwebtoken`, and `bcrypt` — no databas
 npm test
 ```
 
-Covers all auth routes (register, login, duplicate email, wrong password) and all task routes including pagination behaviour, limit capping, validation errors, and token rejection cases.
+- **`tasks.test.ts`** covers all auth routes (register, login, duplicate email, wrong password) and all task routes end-to-end over HTTP (via `app.request()`), including pagination behaviour, limit capping, validation errors, token rejection, and ownership scoping — assertions check not just response status/body but the exact `where`/`data` arguments passed to Prisma, so a regression that silently dropped the `userId` filter would fail the suite rather than pass on stale assumptions.
+- **`tasks.trpc.test.ts`** covers the same task procedures called directly through `createCallerFactory` — no HTTP layer, context is constructed by hand to control `userId` directly — including the same ownership-scoping assertions and the cross-user `NOT_FOUND` case for `update`/`delete`.
 
 ---
 
@@ -489,6 +516,9 @@ Or push to your main branch if you have auto-deploy enabled.
 - **tRPC router and procedure model, mounted alongside REST via `@hono/trpc-server`**
 - **Zod-validated tRPC procedure inputs — validation runs before your handler, no manual checks**
 - **Protected procedures via tRPC middleware, as a contrast to path-based auth middleware**
+- **A single shared JWT verification function used by both REST middleware and tRPC context — one source of truth instead of duplicated `jwt.verify()` calls**
+- **Authorization, not just authentication — every task query scoped to its owner, with ownership enforced inside the database query itself rather than as a separate check after fetching**
+- **Deliberate `404` vs `403` design — an ownership violation and a missing resource return identical responses, so probing an id can't confirm it exists**
 - **End-to-end type inference — the `AppRouter` type flows into a Next.js client with zero manual client types (see `trpc-frontend/`)**
 - Environment variable validation with Zod at startup — fails fast with a clear error if config is missing
 - CORS configuration with an explicit origin allowlist — understands why `*` breaks credentialed requests
@@ -498,6 +528,6 @@ Or push to your main branch if you have auto-deploy enabled.
 - Auth middleware that decodes JWTs and passes user identity to route handlers
 - Cursor-based and offset-based pagination — knows the tradeoffs of each
 - Global error handling and `notFound` fallback
-- Prisma schema, migrations, and CRUD operations
+- Prisma schema, migrations, and CRUD operations, including a foreign-key relation with an indexed lookup column
 - Supabase hosted PostgreSQL with connection pooling
-- Unit testing with Vitest and mocked external dependencies
+- Unit testing with Vitest and mocked external dependencies — including tests that assert on the exact arguments passed to a mocked dependency, not just the resulting response

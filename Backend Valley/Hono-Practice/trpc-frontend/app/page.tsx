@@ -1,18 +1,47 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { trpc } from "./_trpc/client"
+import { getToken, clearToken, decodeEmailForDisplay } from "./_trpc/auth"
 
 export default function Home() {
-  const [title, setTitle] = useState("")
+  const router = useRouter()
   const utils = trpc.useUtils()
 
-  const { data, isLoading, error } = trpc.tasks.list.useQuery({})
+  // Initialize state synchronously on client mount (avoids cascading renders)
+  const [token] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null
+    return getToken()
+  })
+
+  const [email] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null
+    const tok = getToken()
+    return tok ? decodeEmailForDisplay(tok) : null
+  })
+
+  const [title, setTitle] = useState("")
+
+  // Effect only handles side-effect (redirecting)
+  useEffect(() => {
+    if (!token) {
+      router.replace("/login")
+    }
+  }, [token, router])
+
+  const checkedAuth = Boolean(token)
+
+  const { data, isLoading, error } = trpc.tasks.list.useQuery(
+    {},
+    { enabled: checkedAuth },
+  )
 
   const createTask = trpc.tasks.create.useMutation({
     async onMutate(newTask) {
       await utils.tasks.list.cancel()
       const previousTasks = utils.tasks.list.getData({})
+
       utils.tasks.list.setData({}, (old) => {
         if (!old) return old
         return {
@@ -24,6 +53,7 @@ export default function Home() {
               title: newTask.title,
               done: false,
               createdAt: new Date().toISOString(),
+              userId: "", // Added missing userId property required by your task type
             },
           ],
         }
@@ -31,8 +61,9 @@ export default function Home() {
       return { previousTasks }
     },
     onError(_err, _newTask, context) {
-      if (context?.previousTasks)
+      if (context?.previousTasks) {
         utils.tasks.list.setData({}, context.previousTasks)
+      }
     },
     onSettled() {
       utils.tasks.list.invalidate()
@@ -55,8 +86,9 @@ export default function Home() {
       return { previousTasks }
     },
     onError(_err, _input, context) {
-      if (context?.previousTasks)
+      if (context?.previousTasks) {
         utils.tasks.list.setData({}, context.previousTasks)
+      }
     },
     onSettled() {
       utils.tasks.list.invalidate()
@@ -74,22 +106,40 @@ export default function Home() {
       return { previousTasks }
     },
     onError(_err, _input, context) {
-      if (context?.previousTasks)
+      if (context?.previousTasks) {
         utils.tasks.list.setData({}, context.previousTasks)
+      }
     },
     onSettled() {
       utils.tasks.list.invalidate()
     },
   })
 
+  function handleLogout() {
+    clearToken()
+    router.replace("/login")
+  }
+
+  // Nothing to render until we've confirmed there's a token — avoids a
+  // flash of the empty task list before the /login redirect kicks in.
+  if (!checkedAuth) return null
+
   return (
     <main className="min-h-screen bg-[#0F1115] text-[#EDEBE6] flex items-start justify-center px-4 py-16">
       <div className="w-full max-w-md">
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold tracking-tight">Tasks</h1>
-          <p className="mt-1 font-mono text-xs text-[#7B8291]">
-            trpc.tasks.list.useQuery()
-          </p>
+        <div className="mb-6 flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Tasks</h1>
+            <p className="mt-1 font-mono text-xs text-[#7B8291]">
+              logged in as {email ?? "unknown"}
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="font-mono text-xs text-[#7B8291] hover:text-[#FB7185]"
+          >
+            log out
+          </button>
         </div>
 
         <form

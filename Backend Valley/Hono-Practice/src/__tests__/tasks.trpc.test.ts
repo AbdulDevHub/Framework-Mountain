@@ -62,6 +62,25 @@ describe("tRPC Tasks Router", () => {
 
       expect(result.data).toHaveLength(1)
       expect(result.data[0].title).toBe("Task 1")
+
+      // Both must be scoped to the caller — this is what stops one user's
+      // list from including another user's tasks.
+      expect(mockPrisma.task.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: "user-123" } }),
+      )
+      expect(mockPrisma.task.count).toHaveBeenCalledWith({ where: { userId: "user-123" } })
+    })
+
+    it("scopes cursor-paginated results to the authenticated user", async () => {
+      const fakeTasks = [{ id: "2", title: "Task 2", done: false, createdAt: new Date() }]
+      mockPrisma.task.findMany.mockResolvedValue(fakeTasks)
+
+      const caller = createCaller(makeContext("user-123"))
+      await caller.tasks.list({ limit: 10, page: 1, cursor: "1" })
+
+      expect(mockPrisma.task.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: "user-123" } }),
+      )
     })
 
     it("throws UNAUTHORIZED when there's no userId in context", async () => {
@@ -82,8 +101,9 @@ describe("tRPC Tasks Router", () => {
       const result = await caller.tasks.create({ title: "Buy groceries" })
 
       expect(result.title).toBe("Buy groceries")
+      // userId comes from ctx (the verified JWT), never from client input.
       expect(mockPrisma.task.create).toHaveBeenCalledWith({
-        data: { title: "Buy groceries" },
+        data: { title: "Buy groceries", userId: "user-123" },
       })
     })
 
@@ -115,6 +135,10 @@ describe("tRPC Tasks Router", () => {
 
       expect(result.title).toBe("Updated")
       expect(result.done).toBe(true)
+      expect(mockPrisma.task.update).toHaveBeenCalledWith({
+        where: { id: "1", userId: "user-123" },
+        data: { title: "Updated", done: true },
+      })
     })
 
     it("throws NOT_FOUND when the task doesn't exist", async () => {
@@ -124,6 +148,23 @@ describe("tRPC Tasks Router", () => {
 
       await expect(caller.tasks.update({ id: "fake-id", title: "Updated" })).rejects.toMatchObject({
         code: "NOT_FOUND",
+      })
+    })
+
+    it("throws NOT_FOUND (not FORBIDDEN) when the task belongs to another user", async () => {
+      // where: { id, userId } matches nothing for someone else's task, so
+      // Prisma throws the same way as a genuinely missing id — by design,
+      // this endpoint never confirms whether the id exists at all.
+      mockPrisma.task.update.mockRejectedValue(new Error("Record not found"))
+
+      const caller = createCaller(makeContext("user-456")) // a different user
+      await expect(
+        caller.tasks.update({ id: "someone-elses-task", title: "Hijacked" }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" })
+
+      expect(mockPrisma.task.update).toHaveBeenCalledWith({
+        where: { id: "someone-elses-task", userId: "user-456" },
+        data: { title: "Hijacked" },
       })
     })
 
@@ -145,6 +186,9 @@ describe("tRPC Tasks Router", () => {
       const result = await caller.tasks.delete({ id: "1" })
 
       expect(result).toEqual({ success: true })
+      expect(mockPrisma.task.delete).toHaveBeenCalledWith({
+        where: { id: "1", userId: "user-123" },
+      })
     })
 
     it("throws NOT_FOUND when the task doesn't exist", async () => {
@@ -154,6 +198,19 @@ describe("tRPC Tasks Router", () => {
 
       await expect(caller.tasks.delete({ id: "fake-id" })).rejects.toMatchObject({
         code: "NOT_FOUND",
+      })
+    })
+
+    it("throws NOT_FOUND (not FORBIDDEN) when the task belongs to another user", async () => {
+      mockPrisma.task.delete.mockRejectedValue(new Error("Record not found"))
+
+      const caller = createCaller(makeContext("user-456"))
+      await expect(
+        caller.tasks.delete({ id: "someone-elses-task" }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" })
+
+      expect(mockPrisma.task.delete).toHaveBeenCalledWith({
+        where: { id: "someone-elses-task", userId: "user-456" },
       })
     })
 

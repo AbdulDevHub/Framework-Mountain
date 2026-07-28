@@ -11,6 +11,13 @@ model Task {
   title     String
   done      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Every "list tasks for this user" query filters by userId — this index
+  // is what keeps that query fast as the table grows, instead of a full scan.
+  @@index([userId])
 }
 
 model User {
@@ -18,4 +25,6 @@ model User {
   email        String   @unique
   passwordHash String
   createdAt    DateTime @default(now())
+
+  tasks Task[]
 }

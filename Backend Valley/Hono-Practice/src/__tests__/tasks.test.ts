@@ -314,6 +314,13 @@ describe("Tasks API", () => {
       expect(body.page).toBe(1)
       expect(body.totalPages).toBeDefined()
       expect(body.nextCursor).toBeNull()
+
+      // Both queries must be scoped to the authenticated user — this is what
+      // stops user A's task list from including user B's tasks.
+      expect(mockPrisma.task.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: "user-123" } }),
+      )
+      expect(mockPrisma.task.count).toHaveBeenCalledWith({ where: { userId: "user-123" } })
     })
 
     it("returns cursor-paginated results when cursor is provided", async () => {
@@ -333,6 +340,10 @@ describe("Tasks API", () => {
       const body = await res.json()
       expect(body.data).toHaveLength(2) // extra item trimmed off
       expect(body.nextCursor).toBe("3") // last item's id
+
+      expect(mockPrisma.task.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: "user-123" } }),
+      )
     })
 
     it("caps limit at 100 regardless of what the client sends", async () => {
@@ -385,6 +396,12 @@ describe("Tasks API", () => {
       const body = await res.json()
       expect(body.title).toBe("Buy groceries")
       expect(body.done).toBe(false)
+
+      // The critical part: the task must be owned by the authenticated user
+      // (from the JWT, "user-123"), never something the client could supply.
+      expect(mockPrisma.task.create).toHaveBeenCalledWith({
+        data: { title: "Buy groceries", userId: "user-123" },
+      })
     })
 
     it("returns 400 when title is missing", async () => {
@@ -411,6 +428,13 @@ describe("Tasks API", () => {
       const body = await res.json()
       expect(body.title).toBe("Updated")
       expect(body.done).toBe(true)
+
+      // where must include userId — this is what prevents user A from
+      // updating a task that exists but belongs to user B.
+      expect(mockPrisma.task.update).toHaveBeenCalledWith({
+        where: { id: "1", userId: "user-123" },
+        data: { title: "Updated", done: true },
+      })
     })
 
     it("returns 404 when task does not exist", async () => {
@@ -418,6 +442,24 @@ describe("Tasks API", () => {
 
       const res = await makeRequest("PUT", "/tasks/fake-id", { title: "Updated" })
       expect(res.status).toBe(404)
+    })
+
+    it("returns 404 when the task exists but belongs to another user", async () => {
+      // In real Prisma, where: { id, userId } simply matches zero rows here
+      // and throws — from the caller's perspective this is indistinguishable
+      // from the task not existing at all, which is intentional (see README:
+      // login doesn't reveal whether the email or password was wrong).
+      mockPrisma.task.update.mockRejectedValue(new Error("Record not found"))
+
+      const res = await makeRequest("PUT", "/tasks/someone-elses-task", { title: "Hijacked" })
+      expect(res.status).toBe(404)
+
+      const body = await res.json()
+      expect(body.error).toBe("Task not found") // same message as the "doesn't exist" case
+      expect(mockPrisma.task.update).toHaveBeenCalledWith({
+        where: { id: "someone-elses-task", userId: "user-123" },
+        data: { title: "Hijacked" },
+      })
     })
 
     it("returns 400 when body is invalid", async () => {
@@ -434,6 +476,10 @@ describe("Tasks API", () => {
 
       const res = await makeRequest("DELETE", "/tasks/1")
       expect(res.status).toBe(204)
+
+      expect(mockPrisma.task.delete).toHaveBeenCalledWith({
+        where: { id: "1", userId: "user-123" },
+      })
     })
 
     it("returns 404 when task does not exist", async () => {
@@ -441,6 +487,16 @@ describe("Tasks API", () => {
 
       const res = await makeRequest("DELETE", "/tasks/fake-id")
       expect(res.status).toBe(404)
+    })
+
+    it("returns 404 when the task exists but belongs to another user", async () => {
+      mockPrisma.task.delete.mockRejectedValue(new Error("Record not found"))
+
+      const res = await makeRequest("DELETE", "/tasks/someone-elses-task")
+      expect(res.status).toBe(404)
+      expect(mockPrisma.task.delete).toHaveBeenCalledWith({
+        where: { id: "someone-elses-task", userId: "user-123" },
+      })
     })
   })
 })

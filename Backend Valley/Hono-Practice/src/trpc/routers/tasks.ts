@@ -29,6 +29,10 @@ export const tasksRouter = router({
           take: limit + 1,
           skip: 1,
           cursor: { id: cursor },
+          // Ownership filter — a user can only ever page through their own tasks.
+          // Also means a cursor id from another user's task simply yields an
+          // empty page rather than leaking their rows.
+          where: { userId: ctx.userId },
           orderBy: { createdAt: "asc" },
         })
         const hasNextPage = items.length > limit
@@ -41,11 +45,12 @@ export const tasksRouter = router({
 
       const [items, total] = await Promise.all([
         ctx.prisma.task.findMany({
+          where: { userId: ctx.userId },
           skip: (page - 1) * limit,
           take: limit,
           orderBy: { createdAt: "asc" },
         }),
-        ctx.prisma.task.count(),
+        ctx.prisma.task.count({ where: { userId: ctx.userId } }),
       ])
 
       return {
@@ -60,7 +65,11 @@ export const tasksRouter = router({
   create: protectedProcedure
     .input(CreateTaskSchema)
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.task.create({ data: { title: input.title } })
+      // Ownership is assigned at creation time, straight from the verified
+      // JWT — never trust a userId if it ever showed up in client input.
+      return ctx.prisma.task.create({
+        data: { title: input.title, userId: ctx.userId },
+      })
     }),
 
   update: protectedProcedure
@@ -68,7 +77,15 @@ export const tasksRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input
       try {
-        return await ctx.prisma.task.update({ where: { id }, data })
+        // where: { id, userId } means this only matches a row that is BOTH
+        // the requested id AND owned by the caller. If it's someone else's
+        // task, this throws exactly the same way as if the id didn't exist
+        // at all — Prisma's P2025 "record not found" — so we can't (and
+        // shouldn't) distinguish the two cases in the response.
+        return await ctx.prisma.task.update({
+          where: { id, userId: ctx.userId },
+          data,
+        })
       } catch {
         throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" })
       }
@@ -78,7 +95,9 @@ export const tasksRouter = router({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       try {
-        await ctx.prisma.task.delete({ where: { id: input.id } })
+        await ctx.prisma.task.delete({
+          where: { id: input.id, userId: ctx.userId },
+        })
         return { success: true }
       } catch {
         throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" })
