@@ -136,6 +136,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="./Tech%20Experiments/My MCP Server/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/N8N Workflows/Screenshot.png" width="220" />
   <img src="./Tech%20Experiments/GSAP-Practice/public/preview.png" width="220" />
+  <img src="./Tech%20Experiments/OpenTelemetry-Demo/Screenshot.png" width="220" />
 </div>
 
 ### Projects
@@ -158,8 +159,9 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **LangChain-Practice** — Hands-on learning projects exploring LangChain (Built with Python and Streamlit)
 - **GSAP-Practice** —  Hands-on learning exploring GSAP (Built with React, Vite, and Tailwind CSS)
 - **ASCII Terminal Player** — A terminal-based video player that plays videos using **colorful ASCII art**, OpenCV, NumPy, and Python
+- **OpenTelemetry-Demo** — A hands-on learning project exploring OpenTelemetry (Built with Hono and Jaeger)
 
-**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ, Pino, Git, Stripe CLI, Node.js, MCP SDK, Zod, Husky, Dependabot, Snyk, Bun, N8N, LangChain, Streamlit, GSAP, OpenCV, NumPy
+**Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ, Pino, Git, Stripe CLI, Node.js, MCP SDK, Zod, Husky, Dependabot, Snyk, Bun, N8N, LangChain, Streamlit, GSAP, OpenCV, NumPy, Hono, Jaeger
 
 ---
 
