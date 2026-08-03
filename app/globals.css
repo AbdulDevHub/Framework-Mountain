@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   CareerFlow design tokens (Tailwind v4 @theme)
+   ─────────────────────────────────────────────
+   brand  = violet-primary, used for actions, links,
+            active nav, and the "matching" feature
+   accent = emerald, used for positive signals
+            (strong match scores, accepted status)
+   */
+
+@theme {
+  /* Typography — Geist from next/font, exposed as CSS vars in layout.tsx */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  /* Brand — violet */
+  --color-brand-50: #f5f2ff;
+  --color-brand-100: #ede8ff;
+  --color-brand-200: #ddd4ff;
+  --color-brand-300: #c4b2ff;
+  --color-brand-400: #a789ff;
+  --color-brand-500: #8c5eff;
+  --color-brand-600: #7a3ff6;
+  --color-brand-700: #6b2de0;
+  --color-brand-800: #5925bc;
+  --color-brand-900: #4a209a;
+  --color-brand-950: #2c1069;
+
+  /* Accent — emerald for scores / positive */
+  --color-accent-50: #ecfdf5;
+  --color-accent-100: #d1fae5;
+  --color-accent-200: #a7f3d0;
+  --color-accent-300: #6ee7b7;
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065f46;
+  --color-accent-900: #064e3b;
+
+  /* Motion */
+  --animate-fade-in-up: fade-in-up 0.35s ease-out both;
+  --animate-fade-in: fade-in 0.3s ease-out both;
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* ── Base layer ───────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-stone-50 font-sans text-slate-900 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Consistent focus rings for keyboard users */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    @apply bg-brand-200 text-brand-900;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply bg-white;
+  }
+}
+
+/* ── Utility helpers ───────────────────────────── */
+
+/* Subtle page gradient for marketing-style surfaces */
+@utility bg-hero-fade {
+  background:
+    radial-gradient(60rem 30rem at 120% -10%, var(--color-brand-100) 0%, transparent 60%),
+    radial-gradient(50rem 28rem at -20% 0%, var(--color-accent-100) 0%, transparent 55%),
+    var(--color-stone-50);
+}
+
+/* Card hover lift shared by all tappable cards */
+@utility card-hover {
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out,
+    border-color 0.15s ease-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    @apply border-brand-200 shadow-lg shadow-brand-900/5;
+  }
+}
+
+/* Thin, subtle scrollbar */
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-300) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-slate-300);
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

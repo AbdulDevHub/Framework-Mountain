@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: careerflow
+      POSTGRES_PASSWORD: careerflow_dev_only
+      POSTGRES_DB: careerflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # Used by `docker compose up --wait` and by anything that wants to
+      # block until Postgres is actually ready to accept connections,
+      # not just "the container started."
+      test: ["CMD-SHELL", "pg_isready -U careerflow -d careerflow"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+# Named volumes (rather than bind mounts) so data survives `docker
+# compose down` but not `docker compose down -v` — the latter is your
+# "wipe the dev database and start clean" command.
+volumes:
+  postgres_data:
+  redis_data:
