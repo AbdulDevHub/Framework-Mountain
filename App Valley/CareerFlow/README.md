@@ -579,6 +579,85 @@ npx prisma generate   # only needed once, or after schema.prisma changes
 pnpm test
 ```
 
+### Checking that queries actually use an index
+
+The unit tests above prove the *router logic* is correct (right
+`where` clause, scoped by `userId`, etc.) — but they run against a
+mocked Prisma client, so they can't tell you whether Postgres is
+actually able to use an index to satisfy that query efficiently. That's
+a separate concern, checked separately, with a real database.
+
+**Why this matters, in short:** an index is a data structure Postgres
+maintains alongside a table so it can jump straight to matching rows
+instead of reading the whole table row by row (a "sequential scan," or
+"seq scan"). On a table with a handful of rows, a seq scan is actually
+fine — even faster than the overhead of using an index. But as a table
+grows into the thousands or millions of rows, a query that seq-scans
+gets linearly slower with table size, while an index scan stays roughly
+flat. The risk this project cares about specifically: `schema.prisma`
+declares `@@index([userId])` on `JobPosting`/`Application`/`Resume` and
+a compound `@@index([resumeId, jobPostingId, computedAt])` on
+`MatchResult` — but a schema change, a query rewrite, or Prisma
+generating unexpected SQL could silently stop a query from using one of
+these, and nothing would *fail* — it would just get slower, in a way
+that's invisible in dev with a 5-row table and only shows up as a
+production slowdown once real data accumulates.
+
+`EXPLAIN ANALYZE <query>` asks Postgres to actually run the query and
+report back the plan it chose (which index, if any, and how long each
+step took) rather than the query's result rows. The line to look for in
+the output is the first one: `Index Scan using "..."` is what you want;
+`Seq Scan on "..."` on a table with meaningful row count means the
+index isn't being used, and query 2 vs. query 1 in `explain-analyze.sql`
+shows this project's actual test case for that (checked once against
+500 seeded rows and confirmed correct).
+
+Two ways to run this check:
+
+**Automated (recommended):**
+
+```bash
+npx tsx scripts/check-query-plans.ts
+```
+
+This seeds enough `JobPosting` rows to make the check meaningful (only
+if the table's below that threshold — it's a no-op on subsequent runs),
+pulls real ids for every query directly from the database, runs
+`EXPLAIN ANALYZE` on each of the four ownership-scoped queries the app
+actually performs, and fails loudly (non-zero exit code, with an
+explicit `⚠️ SEQ SCAN DETECTED` line naming the query) if any of them
+stop using an index. Safe to re-run any time — it reuses a dedicated
+`loadtest@careerflow.local` user and doesn't touch demo or real data.
+Cheap enough to run after any change to `schema.prisma`'s indexes or to
+a router's `where` clause, and straightforward to wire into CI later
+since it already exits non-zero on failure.
+
+**Manual (`scripts/explain-analyze.sql`):**
+
+The four queries themselves — and, importantly, the comments explaining
+*why each one* is the query worth checking (as opposed to, say, a
+full-text/trigram search, which nothing in this app currently
+performs) — live in `scripts/explain-analyze.sql`. Keep reading that
+file if you want the reasoning; run `check-query-plans.ts` if you just
+want the check. To run the file by hand against real ids:
+
+```powershell
+# 1. seed enough rows to make the check meaningful
+npx tsx scripts/seed-load-test.ts --count=500
+
+# 2. grab real ids (psql interactive avoids PowerShell quoting issues
+#    entirely — easier than -c '...' one-liners)
+docker exec -it careerflow-postgres-1 psql -U careerflow -d careerflow
+#   SELECT id FROM "Resume" LIMIT 1;
+#   SELECT id, "userId" FROM "JobPosting" LIMIT 5;
+#   SELECT "resumeId", "jobPostingId" FROM "MatchResult" LIMIT 1;
+#   \q
+
+# 3. paste those ids into scripts/explain-analyze.sql in place of the
+#    'some-real-...' placeholders, then run it
+Get-Content scripts\explain-analyze.sql | docker exec -i careerflow-postgres-1 psql -U careerflow -d careerflow
+```
+
 ---
 
 ## 6. What to read, and in what order, if you're lost
