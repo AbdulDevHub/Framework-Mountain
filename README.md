@@ -180,6 +180,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="./App%20Valley/NoteMark/Screenshot.png" width="220" />
   <img src="./App%20Valley/Screen%20Recorder/Screenshot.png" width="220" />
   <img src="./App%20Valley/Image%20Resizer/assets/screen.png" width="220" />
+  <img src="./App Valley/CareerFlow/screenshots/Screenshot - Dashboard.png" width="220" />
 </div>
 
 ### Projects
@@ -235,7 +236,11 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   A desktop tool for selecting an image and easily changing its width and/or height.  
   **Tech:** Electron.js, JavaScript, HTML, CSS
 
-**Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase, GSAP, PostgreSQL, shadcn-ui, Stripe, Kinde Auth, Prismic, Nuxt.js, Prisma ORM, Supabase, OAuth, Electron, Markdown, yarn
+- **Career Flow**
+  A job application tracker that tracks job applications per authenticated user, matches resume text against job postings, queues background jobs (reminders) via BullMQ, and is instrumented with OpenTelemetry so the queue and API can be traced end to end.
+  **Tech:** tRPC, Prisma ORM, PostgreSQL, BullMQ, OpenTelemetry, Vitest
+
+**Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase, GSAP, PostgreSQL, shadcn-ui, Stripe, Kinde Auth, Prismic, Nuxt.js, Prisma ORM, Supabase, OAuth, Electron, Markdown, yarn, tRPC, BullMQ, OpenTelemetry, vitest
 
 ---
 
@@ -307,7 +312,7 @@ A submodule is a pointer from this repo to a specific commit in another repo. Th
 **Submodule projects in this repo:**
 
 | Project | Valley | Source |
-|---|---|---|
+| --- | --- | --- |
 | Filmverse | App Valley | [AbdulDevHub/Filmverse](https://github.com/AbdulDevHub/Filmverse) |
 | CaseCobra | App Valley | [AbdulDevHub/Case-Cobra](https://github.com/AbdulDevHub/Case-Cobra) |
 | Glisten AI | App Valley | [AbdulDevHub/Glisten-AI](https://github.com/AbdulDevHub/Glisten-AI) |

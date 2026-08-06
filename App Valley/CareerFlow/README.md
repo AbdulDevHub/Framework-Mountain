@@ -5,6 +5,18 @@
 > conventions and non-negotiables live in `AGENTS.md`; current status and
 > next steps live in `context/progress-tracker.md`.
 
+## Screenshots
+
+<details>
+  <summary>Click to view screenshots</summary>
+
+  <img src="./screenshots/Screenshot%20-%20Homepage.png" width="300" alt="Homepage">
+  <img src="./screenshots/Screenshot%20-%20Dashboard.png" width="300" alt="Dashboard">
+  <img src="./screenshots/Screenshot%20-%20Login.png" width="300" alt="Login">
+  <img src="./screenshots/Screenshot%20-%20Application.png" width="300" alt="Application">
+  <img src="./screenshots/Screenshot%20-%20Reminders.png" width="300" alt="Reminders">
+</details>
+
 ## Codebase Guide
 
 This doc explains **what each file does and why it exists**, at a level
@@ -24,7 +36,7 @@ Your app is really **two separate running programs**:
 2. **The worker** — a completely separate program that sits around
    waiting for reminder jobs to come due, then sends them. It doesn't
    respond to web requests at all. You start it separately
-   (`npm run worker`).
+   (`pnpm run worker`).
 
 Why split them? If reminders lived inside the web server, "send this
 reminder in 3 days" would mean *something* has to stay running and
@@ -85,7 +97,7 @@ version — not the full docs.
 **`docker-compose.yml`**
 Spins up local Postgres and Redis in containers — just the infrastructure,
 not the app itself. Your Next.js server and the worker still run
-directly on your machine (`npm run dev`, `npm run worker`); they just
+directly on your machine (`pnpm run dev`, `pnpm run worker`); they just
 connect to the databases running inside Docker.
 
 **`.env.example`**
@@ -185,6 +197,23 @@ unbounded, one 0–1), and blending them would hide that. Read the
 comments in this file once, slowly — it's the most Postgres-specific
 part of the codebase.
 
+> **Why not just call an AI API?** This was a deliberate tradeoff, not
+> a shortcut around one. An AI-based matcher would need an API key, a
+> per-request cost, network latency, and non-deterministic output (the
+> same resume/posting pair could score differently on two different
+> days). Postgres FTS + trigram similarity is free, runs in the same
+> query as everything else in this app, returns identical results for
+> identical input every time (which matters for the `getHistory` view —
+> a score changing over time should mean *the resume changed*, not that
+> a model changed underneath you), and is fast enough to run
+> synchronously in the request instead of needing a job queue. The
+> honest tradeoff: it can't understand meaning the way an LLM can (it
+> won't know "led a team of 5" and "management experience" are related
+> unless the words overlap), so it will miss matches an AI reader
+> would catch. For a resume/job-posting text-similarity task, that
+> tradeoff — deterministic, free, instant, less semantically clever —
+> was worth it.
+
 **`server/routers/match.ts`**
 `compute` (score one resume against one posting), `computeBatch` (same,
 for up to 50 postings at once), `getLatest` (most recent score for a
@@ -212,7 +241,7 @@ scores — computed for real via `lib/matching.ts`'s `computeMatchScores`
 against the actual seeded text, not hardcoded numbers. Wired up as
 Prisma's official seed hook (the `"prisma": { "seed": ... }` entry in
 `package.json`), so `npx prisma migrate reset` runs it automatically
-too, not just `npm run db:seed`. Safe to re-run any time — it deletes
+too, not just `pnpm run db:seed`. Safe to re-run any time — it deletes
 the previous demo user (which cascades away everything tied to them)
 before recreating everything fresh.
 
@@ -292,7 +321,7 @@ pulls jobs out of. Also defines the *shape* of a job's data
 available when it eventually runs.
 
 **`worker/reminderWorker.ts`**
-The standalone program mentioned in section 1. Run it with `npm run
+The standalone program mentioned in section 1. Run it with `pnpm run
 worker` — it starts, connects to Redis, and then just sits there,
 waking up whenever a job's scheduled time arrives (BullMQ handles the
 "wait until 3 days from now" part). When a reminder fires, it
@@ -337,18 +366,18 @@ cp .env.example .env.local
 #   for the exact callback URL to register)
 
 # 2. Install dependencies
-npm install
+pnpm install
 
 # 3. Start Postgres + Redis via Docker
-npm run docker:up
+pnpm run docker:up
 
 # 4. Create the database tables from schema.prisma
 npx prisma generate
 npx prisma migrate dev --name init
 
 # 5. Seed a demo user with realistic data
-npm run db:seed
-# This prints a DEMO_USER_ID — copy it into .env, then restart `npm run dev`
+pnpm run db:seed
+# This prints a DEMO_USER_ID — copy it into .env, then restart `pnpm run dev`
 # so the new env var is picked up. /demo will show the seeded data after that.
 ```
 
@@ -356,20 +385,20 @@ npm run db:seed
 
 ```bash
 # Terminal 1
-npm run dev       # the web server
+pnpm run dev       # the web server
 
 # Terminal 2
-npm run worker    # the reminder worker
+pnpm run worker    # the reminder worker
 ```
 
-Docker (`npm run docker:up`) only needs to be run once per session —
+Docker (`pnpm run docker:up`) only needs to be run once per session —
 Postgres and Redis keep running in the background until you stop them.
 
 **Other Docker commands:**
 
 ```bash
-npm run docker:down    # stop Postgres/Redis, keep the data
-npm run docker:reset   # stop AND wipe all data — use when you want a clean database
+pnpm run docker:down    # stop Postgres/Redis, keep the data
+pnpm run docker:reset   # stop AND wipe all data — use when you want a clean database
 ```
 
 **If something fails immediately on startup** with a message like
@@ -383,12 +412,176 @@ covers `.env*.local` but not a bare `.env` — add it if it's not there).
 `.env.example` is safe to commit (no real secrets); `.env` never is.
 
 **The demo route (`/demo`) needs a seeded demo user.** Run
-`npm run db:seed` (see section 4 above) — it prints the `DEMO_USER_ID`
+`pnpm run db:seed` (see section 4 above) — it prints the `DEMO_USER_ID`
 to put in `.env`.
 
 ---
 
-## 5. What to read, and in what order, if you're lost
+## 5. Testing
+
+This section covers the Vitest suite added on top of the app — what's
+tested, why those specific things and not everything, and how the
+tricky parts (mocking a database, testing a Server Component, testing
+two separate processes) actually work. It's written assuming you
+haven't used Vitest much before.
+
+### Why these four things, specifically
+
+Not every file has a test — that's on purpose. The four things covered
+are the ones where a bug would be a **security or correctness**
+problem, not a polish problem, and where "I looked at the code and it
+looks right" isn't a strong enough answer if someone asks how you know
+it's actually correct:
+
+1. **Ownership-enforced writes** (`server/routers/application.test.ts`) —
+   if `updateMany({ where: { id, userId } })` ever accidentally became
+   `updateMany({ where: { id } })`, one user could edit or delete
+   another user's data. That's a real vulnerability class, not a typo
+   that breaks a button.
+2. **The Server-Component security gate** (`app/dashboard/page.test.tsx`) —
+   this is the actual thing standing between an unauthenticated request
+   and the dashboard. If it silently stopped redirecting, nothing else
+   in the app would catch that.
+3. **The two-process boundary** (`server/routers/reminder.test.ts`,
+   `worker/reminderWorker.test.ts`) — the crash-safety of the whole
+   reminder feature depends on the *order* `reminder.schedule` does
+   things in (Postgres row created before the BullMQ job exists), and
+   on the worker re-checking Postgres before it sends. Both of those
+   are easy to get right by accident today and break silently in six
+   months when someone "simplifies" the function.
+4. **The matching scores** (`lib/matching.integration.test.ts`) — pure,
+   deterministic, input-in/score-out logic. The easiest kind of bug to
+   catch with a test, and the kind of thing that's embarrassing to get
+   wrong in a portfolio piece someone might poke at.
+
+Things like the UI components, the `list`/`getById` read queries, and
+the OpenTelemetry instrumentation don't have tests — they're either low
+risk if wrong (a broken read query fails loudly and immediately) or
+mostly configuration rather than logic worth asserting on.
+
+### How the router tests work: a fake Prisma, not a real database
+
+`server/routers/application.test.ts` and `reminder.test.ts` never touch
+Postgres. Instead, `ctx.prisma` is replaced with a plain object built
+from `vi.fn()` — Vitest's mock function, which remembers every call
+made to it (arguments, order, how many times) so a test can assert on
+that later:
+
+```ts
+const prisma = {
+  application: {
+    updateMany: vi.fn(), // starts as "not called, returns undefined"
+    // ...
+  },
+};
+```
+
+A test then tells a specific mock what to return —
+`prisma.application.updateMany.mockResolvedValue({ count: 0 })`
+simulates "this row didn't belong to the caller, zero rows matched" —
+and calls the real router code (`applicationRouter.createCaller(ctx)`)
+against that fake. This is the standard way to unit-test code that
+talks to a database: you're testing *the router's logic* ("did it
+throw `NOT_FOUND` when count was 0? did it scope the query by both `id`
+and `userId`?"), not Prisma's or Postgres's behavior, which is
+Prisma's/Postgres's own job to get right.
+
+`lib/auth.ts` and `lib/prisma.ts` are also mocked in these files (see
+the `vi.mock(...)` calls at the top) purely so importing the router
+doesn't drag in the real Auth.js config or a real Prisma client — that
+import chain needs a real Next.js runtime and a real `DATABASE_URL` to
+even load, which a router-logic test shouldn't need to care about.
+
+### How the dashboard gate test works: mocking `redirect()`
+
+Next.js's real `redirect()` doesn't `return` — it `throw`s a special
+internal error that Next's framework catches to stop rendering and send
+a redirect response instead. The test mocks `redirect` to do the same
+thing (throw), so `DashboardPage()` behaves exactly like it would in
+production: nothing after `redirect()` ever runs. The test then asserts
+two things for the no-session case: that `redirect` was called with
+`/login`, and that calling the page function actually threw (proving
+execution stopped there, rather than falling through to render).
+
+### How the two-process ordering test works: asserting on order, not just presence
+
+The important property of `reminder.schedule` isn't "it calls Postgres
+and it calls BullMQ" — it's that it calls them in a *specific order*.
+The test proves that by having each mocked call push a label into a
+plain array, then checking the array afterward:
+
+```ts
+prisma.reminderJob.create.mockImplementation(async () => {
+  calls.push("postgres.create");
+  return { id: "rem-1" };
+});
+// ...
+expect(calls).toEqual(["postgres.create", "bullmq.add", "postgres.update"]);
+```
+
+If someone later reordered the code (e.g. enqueued the BullMQ job
+*before* writing the Postgres row, to "simplify" it), this test fails
+immediately — instead of the bug only showing up as an occasional
+orphaned BullMQ job discovered in production weeks later.
+
+`worker/reminderWorker.test.ts` tests the other side of that boundary.
+The tricky part there is that `worker/reminderWorker.ts` normally does
+real work the instant it's imported — it opens a Redis connection,
+starts OpenTelemetry, and calls `new Worker(...)`, which would try to
+actually connect to Redis. Every `vi.mock(...)` at the top of that test
+file exists to neutralize exactly one of those side effects (see the
+comments in the file for which mock does what), so that importing the
+file in a test is safe. The one exception is BullMQ's `Worker` itself:
+instead of letting it run, the mock **captures the processor function**
+it was given and hands it back to the test, so the test can call that
+function directly with a fake job and assert on what it does — without
+ever needing a real queue.
+
+### How the matching tests work: real Postgres, not a mock
+
+`lib/matching.ts` is the one place a fake database genuinely
+wouldn't prove anything — `computeMatchScores` is a thin wrapper around
+`ts_rank`/`similarity()`, real Postgres functions with no JavaScript
+equivalent. Mocking `$queryRaw` to return a canned number would only
+prove "the function returns what I told the mock to return," not that
+the SQL is actually correct. So `lib/matching.integration.test.ts`
+connects to a real Postgres instance (the same one `docker-compose.yml`
+spins up, with `pg_trgm` enabled) and checks real properties of the
+scoring, e.g.:
+
+- identical text scores a perfect `1.0` on trigram similarity
+- a resume that shares vocabulary with a job posting scores higher than
+  one that doesn't, on both scores
+- a typo ("Kubernettes") still scores well via trigram similarity, even
+  though full-text search — which matches on whole word stems — misses
+  it entirely (this is the actual reason the app keeps two separate
+  scores instead of one)
+- an empty resume or empty job description returns `0`, not `null` or
+  an error
+
+Every one of these assertions was manually verified against a live
+Postgres 16 + `pg_trgm` instance while writing this suite (see the
+exact `psql` queries and results in the PR/session notes) — so the
+expected values aren't guesses. If Postgres isn't reachable when you
+run the suite, this file skips itself (`describe.runIf(dbAvailable)`)
+rather than failing the whole test run, since the other suites don't
+need a database at all.
+
+### Running the tests
+
+```bash
+pnpm test              # runs once, all suites
+pnpm run test:watch    # re-runs on file changes
+
+# The matching suite specifically needs Postgres running:
+pnpm run docker:up
+npx prisma generate   # only needed once, or after schema.prisma changes
+pnpm test
+```
+
+---
+
+## 6. What to read, and in what order, if you're lost
 
 1. `schema.prisma` — the data model is the foundation everything else
    sits on. If you understand the tables and how they relate, the rest
