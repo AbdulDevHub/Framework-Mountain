@@ -160,6 +160,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **GSAP-Practice** —  Hands-on learning exploring GSAP (Built with React, Vite, and Tailwind CSS)
 - **ASCII Terminal Player** — A terminal-based video player that plays videos using **colorful ASCII art**, OpenCV, NumPy, and Python
 - **OpenTelemetry-Demo** — A hands-on learning project exploring OpenTelemetry (Built with Hono and Jaeger)
+- **PWA Notes** — A tiny offline-capable notes app, built to explore Progressive Web Apps.
 
 **Tech:** React, Vite, Vitest, JavaScript, TypeScript, GitHub Actions, Docker, Next.js, Auth.js, GitHub OAuth, Ollama, Anthropic, Python, Postgres, Redis, BullMQ, Pino, Git, Stripe CLI, Node.js, MCP SDK, Zod, Husky, Dependabot, Snyk, Bun, N8N, LangChain, Streamlit, GSAP, OpenCV, NumPy, Hono, Jaeger
 

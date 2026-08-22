@@ -1,0 +1,129 @@
+:root {
+  --indigo: #4f46e5;
+  --bg: #f4f4f8;
+  --card: #ffffff;
+  --text: #1f2230;
+  --muted: #6b7080;
+  --danger: #ef4444;
+  --green: #16a34a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  /* Respect the device's safe areas when installed full-screen (notches, home bar) */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.app-header h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pill-online { background: #dcfce7; color: var(--green); }
+.pill-offline { background: #fee2e2; color: var(--danger); }
+
+.install-banner {
+  background: var(--card);
+  border: 1px solid #e5e5ee;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.install-banner button {
+  margin-left: 8px;
+}
+
+.install-banner.hidden { display: none; }
+
+button {
+  background: var(--indigo);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--muted);
+}
+
+.note-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.note-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d8d8e2;
+  font-size: 0.95rem;
+}
+
+.note-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.note-list li {
+  background: var(--card);
+  padding: 12px 14px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.note-list li .delete {
+  background: none;
+  color: var(--danger);
+  font-size: 1rem;
+  padding: 0 4px;
+}
+
+.app-footer {
+  margin-top: 32px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+}
