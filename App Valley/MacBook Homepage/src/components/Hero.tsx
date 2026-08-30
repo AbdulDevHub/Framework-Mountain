@@ -1,12 +1,10 @@
 import { useEffect, useRef } from "react"
 
 const Hero = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 2
-    }
+    if (videoRef.current) videoRef.current.playbackRate = 2
   }, [])
 
   return (
@@ -24,5 +22,4 @@ const Hero = () => {
     </section>
   )
 }
-
 export default Hero

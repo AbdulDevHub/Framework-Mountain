@@ -1,7 +1,6 @@
-import React from "react"
 import { navLinks } from "../constants"
 
-const NavBar: React.FC = () => {
+const NavBar = () => {
   return (
     <header>
       <nav>
@@ -16,16 +15,15 @@ const NavBar: React.FC = () => {
         </ul>
 
         <div className="flex-center gap-3">
-            <button>
-                <img src="/search.svg" alt="Search" />
-            </button>
-            <button>
-                <img src="/cart.svg" alt="Cart" />
-            </button>
+          <button>
+            <img src="/search.svg" alt="Search" />
+          </button>
+          <button>
+            <img src="/cart.svg" alt="Cart" />
+          </button>
         </div>
       </nav>
     </header>
   )
 }
-
 export default NavBar
