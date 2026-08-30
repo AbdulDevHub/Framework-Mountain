@@ -182,6 +182,7 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
   <img src="./App%20Valley/Screen%20Recorder/Screenshot.png" width="220" />
   <img src="./App%20Valley/Image%20Resizer/assets/screen.png" width="220" />
   <img src="./App Valley/CareerFlow/screenshots/Screenshot - Dashboard.png" width="220" />
+  <img src="./App Valley/MacBook Homepage/Screenshot.png" width="220" />
 </div>
 
 ### Projects
@@ -240,6 +241,10 @@ A browser-based **Flappy Bird clone** with sound effects and sprite animations.
 - **Career Flow**
   A job application tracker that tracks job applications per authenticated user, matches resume text against job postings, queues background jobs (reminders) via BullMQ, and is instrumented with OpenTelemetry so the queue and API can be traced end to end.
   **Tech:** tRPC, Prisma ORM, PostgreSQL, BullMQ, OpenTelemetry, Vitest
+
+- **MacBook Homepage**
+  Apple-style 3D website built with React, Three.js, GSAP, and TailwindCSS! Showcase products in immersive 3D scenes, scroll-animated models, and pinned sections. Featuring responsive design, smooth timeline animations, and visually striking image transitions—perfect for developers creating interactive, modern web experiences.
+  **Tech:** React, Three.js, GSAP, Tailwind CSS, Vite, Zustand
 
 **Tech:** Angular, Vue 3, React, Vite, Next.js, Tailwind CSS, Node.js, Vercel AI SDK, Ollama, OpenAI, Claude, Open Router, InsForge, PostHog, Adzuna, BrowserBase, GSAP, PostgreSQL, shadcn-ui, Stripe, Kinde Auth, Prismic, Nuxt.js, Prisma ORM, Supabase, OAuth, Electron, Markdown, yarn, tRPC, BullMQ, OpenTelemetry, vitest
 
