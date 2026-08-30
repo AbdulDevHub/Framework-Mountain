@@ -134,12 +134,11 @@ export const data = [
     id: "13",
     name: "boku_no_hero_academia",
     image: {
-      original:
-        "https://i.pinimg.com/736x/0f/7f/ee/0f7feeb4655ffc029d1b9823bafb2ff8.jpg",
+      original: "https://i.pinimg.com/736x/0f/7f/ee/0f7feeb4655ffc029d1b9823bafb2ff8.jpg",
     },
     kind: "TV",
     episodes: 114,
     episodes_aired: 114,
     score: "8.39",
   },
-];
+]
