@@ -1,5 +1,7 @@
 # 🏔️ Framework Mountain
 
+<img src="./Screenshot.jpg" />
+
 **Framework Mountain** is a curated collection of web development projects organized into themed **Valleys**. Each Valley represents a focused area of exploration such as UI components, creative experiments, full web apps, backend systems, games, portfolios, and data scraping.
 
 All projects are **self-contained**, framework-diverse, and built for hands-on learning.
